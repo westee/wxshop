@@ -6,5 +6,5 @@ public interface SmsCodeService {
      * @param tel 目标手机号
      * @return 返回正确答案
      */
-    String sendSmsCode(String tel)
+    String sendSmsCode(String tel);
 }
