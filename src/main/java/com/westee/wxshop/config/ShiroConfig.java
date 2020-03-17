@@ -1,5 +1,7 @@
 package com.westee.wxshop.config;
 
+import com.westee.wxshop.service.CheckAuthCodeService;
+import com.westee.wxshop.service.ShiroRealm;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.DefaultSessionManager;
@@ -28,12 +30,18 @@ public class ShiroConfig {
     }
 
     @Bean
-    public SecurityManager securityManager (){
+    public SecurityManager securityManager (ShiroRealm shiroRealm){
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 
+        securityManager.setRealm(shiroRealm);
         securityManager.setCacheManager(new MemoryConstrainedCacheManager());
         securityManager.setSessionManager(new DefaultSessionManager());
         return securityManager;
+    }
+
+    @Bean
+    public ShiroRealm myShiroRealm(CheckAuthCodeService checkAuthCodeService){
+        return new ShiroRealm(checkAuthCodeService);
     }
 
 

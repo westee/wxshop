@@ -22,7 +22,7 @@ public class ShiroRealm extends AuthorizingRealm {
         this.setCredentialsMatcher(new CredentialsMatcher() {
             @Override
             public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
-                 return authenticationToken.getCredentials().equals(authenticationInfo.getCredentials());
+                 return new String((char[]) authenticationToken.getCredentials()).equals(authenticationInfo.getCredentials());
             }
         });
     }

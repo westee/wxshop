@@ -23,7 +23,7 @@ public class AuthController {
     @PostMapping("/login")
     public void login(@RequestBody TelAndCode telAndCode){
         UsernamePasswordToken token = new UsernamePasswordToken(telAndCode.getTel(), telAndCode.getCode());
-
+        token.setRememberMe(true);
         SecurityUtils.getSubject().login(token);
     }
 
