@@ -18,14 +18,14 @@ public class UserDao {
     }
 
     public void insertUser(User user) {
-        try(SqlSession sqlSession = sqlSessionFactory.openSession(true)){
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
             UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             userMapper.insert(user);
         }
     }
 
     public User getUserByTel(String tel) {
-        try(SqlSession sqlSession = sqlSessionFactory.openSession(true)){
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
             UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             UserExample example = new UserExample();
             example.createCriteria().andTelEqualTo(tel);

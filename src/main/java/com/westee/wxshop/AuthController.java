@@ -16,12 +16,12 @@ public class AuthController {
 
     @CrossOrigin
     @PostMapping("/code")
-    public void code(@RequestBody TelAndCode telAndCode){
+    public void code(@RequestBody TelAndCode telAndCode) {
         authService.sendAuthCode(telAndCode.getTel());
     }
 
     @PostMapping("/login")
-    public void login(@RequestBody TelAndCode telAndCode){
+    public void login(@RequestBody TelAndCode telAndCode) {
         UsernamePasswordToken token = new UsernamePasswordToken(telAndCode.getTel(), telAndCode.getCode());
         token.setRememberMe(true);
         SecurityUtils.getSubject().login(token);

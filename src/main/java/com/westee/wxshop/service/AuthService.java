@@ -18,7 +18,7 @@ public class AuthService {
 
     public void sendAuthCode(String tel) {
 
-        userService.createUserIfNotExist(tel) ;
+        userService.createUserIfNotExist(tel);
         String correctCode = mockSmsCodeService.sendSmsCode(tel);
         checkAuthCodeService.addCode(tel, correctCode);
     }
