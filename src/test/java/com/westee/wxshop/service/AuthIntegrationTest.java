@@ -19,7 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = WxshopApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yml")
-public class CodeIntegrationTest {
+public class AuthIntegrationTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     Environment environment;
