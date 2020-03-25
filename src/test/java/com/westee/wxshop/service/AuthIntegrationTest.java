@@ -15,6 +15,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
+import java.util.Map;
+
+import static java.net.HttpURLConnection.HTTP_OK;
+
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = WxshopApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -23,6 +28,31 @@ public class AuthIntegrationTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     Environment environment;
+
+    @Test
+    public void loginLogoutTest() throws JsonProcessingException {
+        String statusResponse  = HttpRequest.post(getUrl("/api/status"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .body();
+        Map<String, Object>  response = objectMapper.readValue(statusResponse, Map.class);
+        Assertions.assertFalse((Boolean) response.get("login"));
+
+        int responseCode = HttpRequest.post(getUrl("/api/code"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .send(objectMapper.writeValueAsString(CheckTelServiceTest.VALID_PARAMS))
+                .code();
+        Assertions.assertEquals(HTTP_OK, responseCode);
+
+        Map<String, List<String>> responseHeaders  = HttpRequest.post(getUrl("/api/login"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .send(objectMapper.writeValueAsString(CheckTelServiceTest.VALID_PARAMS_CODE))
+                .headers();
+        List<String> setCookie = responseHeaders.get("Set-Cookie");
+        Assertions.assertNotNull(setCookie);
+    }
 
     @Test
     public void returnHttpOKWhenParamsIsCorrect() throws JsonProcessingException {

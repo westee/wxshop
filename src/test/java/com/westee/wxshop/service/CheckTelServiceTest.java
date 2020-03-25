@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 class CheckTelServiceTest {
     public static AuthController.TelAndCode VALID_PARAMS = new AuthController.TelAndCode("13812345678", null);
+    public static AuthController.TelAndCode VALID_PARAMS_CODE = new AuthController.TelAndCode("13812345678", "000000");
     public static AuthController.TelAndCode EMPTY_PARAMS = new AuthController.TelAndCode(null, null);
 
     @Test
