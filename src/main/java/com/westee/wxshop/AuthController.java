@@ -1,7 +1,10 @@
 package com.westee.wxshop;
 
+import com.westee.wxshop.entity.LoginResponse;
+import com.westee.wxshop.generate.User;
 import com.westee.wxshop.service.AuthService;
 import com.westee.wxshop.service.CheckTelService;
+import com.westee.wxshop.service.UserContext;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.springframework.http.HttpStatus;
@@ -37,9 +40,19 @@ public class AuthController {
         SecurityUtils.getSubject().login(token);
     }
 
+    @PostMapping("/logout")
+    public void logout() {
+        SecurityUtils.getSubject().logout();
+    }
+
+
     @GetMapping("/status")
-    public void loginStatus(){
-        System.out.println(SecurityUtils.getSubject().getPrincipal());
+    public Object loginStatus() {
+        if (UserContext.getCurrentUser() == null) {
+            return LoginResponse.notLogin();
+        } else {
+            return LoginResponse.AlreadyLogin(UserContext.getCurrentUser());
+        }
     }
 
     public static class TelAndCode {

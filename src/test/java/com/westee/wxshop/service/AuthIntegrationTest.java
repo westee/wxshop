@@ -4,6 +4,7 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.westee.wxshop.WxshopApplication;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.westee.wxshop.entity.LoginResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,15 +30,48 @@ public class AuthIntegrationTest {
     @Autowired
     Environment environment;
 
+    private static class HttpResponse {
+        int code;
+        String body;
+        Map<String, List<String>> headers;
+
+        public HttpResponse(int code, String body, Map<String, List<String>> headers) {
+            this.code = code;
+            this.body = body;
+            this.headers = headers;
+        }
+    }
+
+    private HttpResponse doHttpRequest(String apiName, boolean isGet, String requestBody, String cookie) {
+        HttpRequest request;
+        if (isGet) {
+            request = HttpRequest.get(getUrl(apiName));
+        } else {
+            request = HttpRequest.post(getUrl(apiName));
+        }
+        if (cookie != null) {
+            request.header("Cookie", cookie);
+        }
+        request = request.contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE);
+        if (requestBody != null) {
+            request.send(requestBody);
+        }
+        return new HttpResponse(request.code(), request.body(), request.headers());
+    }
+
     @Test
     public void loginLogoutTest() throws JsonProcessingException {
-        String statusResponse  = HttpRequest.post(getUrl("/api/status"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .body();
-        Map<String, Object>  response = objectMapper.readValue(statusResponse, Map.class);
-        Assertions.assertFalse((Boolean) response.get("login"));
+        // 默认情况下为未登录状态
+        String statusResponse = doHttpRequest("/api/status", true, null, null).body;
+//                HttpRequest.get(getUrl("/api/status"))
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .accept(MediaType.APPLICATION_JSON_VALUE)
+//                .body();
+        LoginResponse response = objectMapper.readValue(statusResponse, LoginResponse.class);
+        Assertions.assertFalse(response.isLogin());
 
+        // 获取验证码
         int responseCode = HttpRequest.post(getUrl("/api/code"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -45,22 +79,59 @@ public class AuthIntegrationTest {
                 .code();
         Assertions.assertEquals(HTTP_OK, responseCode);
 
-        Map<String, List<String>> responseHeaders  = HttpRequest.post(getUrl("/api/login"))
+        // 登录
+        Map<String, List<String>> responseHeaders = HttpRequest.post(getUrl("/api/login"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .send(objectMapper.writeValueAsString(CheckTelServiceTest.VALID_PARAMS_CODE))
                 .headers();
         List<String> setCookie = responseHeaders.get("Set-Cookie");
-        Assertions.assertNotNull(setCookie);
+
+        // 得到cookie
+        String sessionId = getSessionIdFromSetCookie(setCookie.stream().filter(cookie -> cookie.contains("JSESSIONID"))
+                .findFirst()
+                .get());
+
+        // 此时应该为登录状态
+        statusResponse = HttpRequest.get(getUrl("/api/status"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Cookie", sessionId)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .body();
+        response = objectMapper.readValue(statusResponse, LoginResponse.class);
+        Assertions.assertTrue(response.isLogin());
+        Assertions.assertNotNull(CheckTelServiceTest.VALID_PARAMS.getTel(), response.getUser().getTel());
+
+        // 注销登录
+        HttpRequest.post(getUrl("/api/logout"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Cookie", sessionId)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .headers();
+
+        // 未登录状态
+        statusResponse = HttpRequest.get(getUrl("/api/status"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Cookie", sessionId)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .body();
+        response = objectMapper.readValue(statusResponse, LoginResponse.class);
+        Assertions.assertFalse(response.isLogin());
+    }
+
+    private String getSessionIdFromSetCookie(String session) {
+        int semiColonIndex = session.indexOf(";");
+//        int equalIndex = session.indexOf("=");
+        return session.substring(0, semiColonIndex);
     }
 
     @Test
     public void returnHttpOKWhenParamsIsCorrect() throws JsonProcessingException {
-       int responseCode = HttpRequest.post(getUrl("/api/code"))
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .send(objectMapper.writeValueAsString(CheckTelServiceTest.VALID_PARAMS))
-            .code();
+        int responseCode = HttpRequest.post(getUrl("/api/code"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .send(objectMapper.writeValueAsString(CheckTelServiceTest.VALID_PARAMS))
+                .code();
         Assertions.assertEquals(HttpStatus.OK.value(), responseCode);
     }
 
