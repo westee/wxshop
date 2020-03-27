@@ -64,27 +64,17 @@ public class AuthIntegrationTest {
     public void loginLogoutTest() throws JsonProcessingException {
         // 默认情况下为未登录状态
         String statusResponse = doHttpRequest("/api/status", true, null, null).body;
-//                HttpRequest.get(getUrl("/api/status"))
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .accept(MediaType.APPLICATION_JSON_VALUE)
-//                .body();
         LoginResponse response = objectMapper.readValue(statusResponse, LoginResponse.class);
         Assertions.assertFalse(response.isLogin());
 
         // 获取验证码
-        int responseCode = HttpRequest.post(getUrl("/api/code"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .send(objectMapper.writeValueAsString(CheckTelServiceTest.VALID_PARAMS))
-                .code();
+        int responseCode = doHttpRequest("/api/code", false,
+                objectMapper.writeValueAsString(CheckTelServiceTest.VALID_PARAMS), null).code;
         Assertions.assertEquals(HTTP_OK, responseCode);
 
         // 登录
-        Map<String, List<String>> responseHeaders = HttpRequest.post(getUrl("/api/login"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .send(objectMapper.writeValueAsString(CheckTelServiceTest.VALID_PARAMS_CODE))
-                .headers();
+        Map<String, List<String>> responseHeaders = doHttpRequest("/api/login", false,
+                objectMapper.writeValueAsString(CheckTelServiceTest.VALID_PARAMS_CODE), null).headers;
         List<String> setCookie = responseHeaders.get("Set-Cookie");
 
         // 得到cookie
@@ -93,35 +83,23 @@ public class AuthIntegrationTest {
                 .get());
 
         // 此时应该为登录状态
-        statusResponse = HttpRequest.get(getUrl("/api/status"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Cookie", sessionId)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .body();
+        statusResponse = doHttpRequest("/api/status", true, null, sessionId).body;
+
         response = objectMapper.readValue(statusResponse, LoginResponse.class);
         Assertions.assertTrue(response.isLogin());
         Assertions.assertNotNull(CheckTelServiceTest.VALID_PARAMS.getTel(), response.getUser().getTel());
 
         // 注销登录
-        HttpRequest.post(getUrl("/api/logout"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Cookie", sessionId)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .headers();
+        doHttpRequest("/api/logout", false, null, sessionId);
 
         // 未登录状态
-        statusResponse = HttpRequest.get(getUrl("/api/status"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Cookie", sessionId)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .body();
+        statusResponse = doHttpRequest("/api/status", true, null, sessionId).body;
         response = objectMapper.readValue(statusResponse, LoginResponse.class);
         Assertions.assertFalse(response.isLogin());
     }
 
     private String getSessionIdFromSetCookie(String session) {
         int semiColonIndex = session.indexOf(";");
-//        int equalIndex = session.indexOf("=");
         return session.substring(0, semiColonIndex);
     }
 
