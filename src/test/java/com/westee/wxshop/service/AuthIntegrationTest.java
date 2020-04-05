@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
 
 @ExtendWith(SpringExtension.class)
@@ -114,13 +115,23 @@ public class AuthIntegrationTest {
     }
 
     @Test
-    public void returnHttpBadRequstWhenParamsIsCorrect() throws JsonProcessingException {
+    public void returnHttpBadRequestWhenParamsIsCorrect() throws JsonProcessingException {
         int responseCode = HttpRequest.post(getUrl("/api/code"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .send(objectMapper.writeValueAsString(CheckTelServiceTest.EMPTY_PARAMS))
                 .code();
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), responseCode);
+    }
+
+    @Test
+    public void returnUnauthorizedIfNotLogin() throws JsonProcessingException {
+            int responseCode = HttpRequest.post(getUrl("/api/any"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .send(objectMapper.writeValueAsString(CheckTelServiceTest.EMPTY_PARAMS))
+                .code();
+        Assertions.assertEquals(HTTP_UNAUTHORIZED, responseCode);
     }
 
 

@@ -1,8 +1,6 @@
 package com.westee.wxshop.config;
 
-import com.westee.wxshop.generate.User;
 import com.westee.wxshop.service.*;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -14,28 +12,39 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.servlet.Filter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Configuration
 public class ShiroConfig implements WebMvcConfigurer {
+
     @Autowired
     UserService userService;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-
         registry.addInterceptor(new UserLoginInterceptor(userService));
     }
 
     @Bean
-    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
+    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager, ShiroLoginFilter shiroLoginFilter) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
 
         Map<String, String> pattern = new HashMap<>();
+        // anno 匿名接口； annoc 非匿名接口；
         pattern.put("/api/code", "anon");
         pattern.put("/api/login", "anon");
+        pattern.put("/api/status", "anon");
+        pattern.put("/api/logout", "anon");
+        pattern.put("/**", "authc");
+
+        // 设置过滤器
+        Map<String, Filter> filterMap = new LinkedHashMap<>();
+        filterMap.put("shiroLoginFilter", shiroLoginFilter);
+        shiroFilterFactoryBean.setFilters(filterMap);
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(pattern);
         return shiroFilterFactoryBean;

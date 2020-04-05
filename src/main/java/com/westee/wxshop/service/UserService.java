@@ -32,7 +32,7 @@ public class UserService {
     /**
      * 根据手机号查找用户，用户不存在则返回null
      * @param tel 用户手机号
-     * @return
+     * @return User
      */
     public User getUserByTel(String tel) {
         return userDao.getUserByTel(tel);

@@ -45,7 +45,6 @@ public class AuthController {
         SecurityUtils.getSubject().logout();
     }
 
-
     @GetMapping("/status")
     public Object loginStatus() {
         if (UserContext.getCurrentUser() == null) {
