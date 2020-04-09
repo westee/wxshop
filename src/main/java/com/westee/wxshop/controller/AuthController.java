@@ -1,4 +1,4 @@
-package com.westee.wxshop;
+package com.westee.wxshop.controller;
 
 import com.westee.wxshop.entity.LoginResponse;
 import com.westee.wxshop.generate.User;

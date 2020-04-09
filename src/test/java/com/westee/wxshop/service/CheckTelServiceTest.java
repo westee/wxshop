@@ -1,6 +1,6 @@
 package com.westee.wxshop.service;
 
-import com.westee.wxshop.AuthController;
+import com.westee.wxshop.controller.AuthController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

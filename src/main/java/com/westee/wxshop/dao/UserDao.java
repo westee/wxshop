@@ -1,4 +1,4 @@
-package com.westee.wxshop;
+package com.westee.wxshop.dao;
 
 import com.westee.wxshop.generate.User;
 import com.westee.wxshop.generate.UserExample;
