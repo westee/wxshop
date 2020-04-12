@@ -66,6 +66,4 @@ public class ShiroConfig implements WebMvcConfigurer {
     public ShiroRealm myShiroRealm(CheckAuthCodeService checkAuthCodeService) {
         return new ShiroRealm(checkAuthCodeService);
     }
-
-
 }

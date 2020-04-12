@@ -1,18 +1,16 @@
 package com.westee.wxshop.entity;
 
+// 作为响应 只有getter方法就可以了。
 public class Response<T> {
     private String message;
     private T data;
 
-    public static <T> Response<T> of(String message, T data) {
-        return new Response<T>(message, data);
+    public static <T> Response<T> of(T object) {
+        return new Response<T>(null, object);
     }
 
-    public static <T> Response<T> of(T data) {
-        return new Response<T>(null, data);
-    }
-
-    public Response() {
+    public static <T> Response<T> of(String message, T object) {
+        return new Response<T>(message, object);
     }
 
     public Response(String message, T data) {
@@ -24,7 +22,4 @@ public class Response<T> {
         return data;
     }
 
-    public String getMessage() {
-        return message;
-    }
 }

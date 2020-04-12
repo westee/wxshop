@@ -34,10 +34,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public void login(@RequestBody TelAndCode telAndCode) {
+    public LoginResponse login(@RequestBody TelAndCode telAndCode) {
         UsernamePasswordToken token = new UsernamePasswordToken(telAndCode.getTel(), telAndCode.getCode());
         token.setRememberMe(true);
         SecurityUtils.getSubject().login(token);
+        return LoginResponse.AlreadyLogin(UserContext.getCurrentUser());
     }
 
     @PostMapping("/logout")
