@@ -12,26 +12,21 @@ import org.springframework.stereotype.Service;
 @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
 @Service
 public class UserDao {
-    private final SqlSessionFactory sqlSessionFactory;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserDao(SqlSessionFactory sqlSessionFactory) {
-        this.sqlSessionFactory = sqlSessionFactory;
+    public UserDao(UserMapper userMapper) {
+        this.userMapper = userMapper;
     }
 
+
     public void insertUser(User user) {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
-            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             userMapper.insert(user);
-        }
     }
 
     public User getUserByTel(String tel) {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
-            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             UserExample example = new UserExample();
             example.createCriteria().andTelEqualTo(tel);
             return userMapper.selectByExample(example).get(0);
-        }
     }
 }
