@@ -26,67 +26,17 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = WxshopApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yml")
-public class AuthIntegrationTest {
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    @Autowired
-    Environment environment;
-
-    private static class HttpResponse {
-        int code;
-        String body;
-        Map<String, List<String>> headers;
-
-        public HttpResponse(int code, String body, Map<String, List<String>> headers) {
-            this.code = code;
-            this.body = body;
-            this.headers = headers;
-        }
-    }
-
-    private HttpResponse doHttpRequest(String apiName, boolean isGet, String requestBody, String cookie) {
-        HttpRequest request;
-        if (isGet) {
-            request = HttpRequest.get(getUrl(apiName));
-        } else {
-            request = HttpRequest.post(getUrl(apiName));
-        }
-        if (cookie != null) {
-            request.header("Cookie", cookie);
-        }
-        request = request.contentType(MediaType.APPLICATION_JSON_VALUE)
-                .accept(MediaType.APPLICATION_JSON_VALUE);
-        if (requestBody != null) {
-            request.send(requestBody);
-        }
-        return new HttpResponse(request.code(), request.body(), request.headers());
-    }
+public class AuthIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     public void loginLogoutTest() throws JsonProcessingException {
-        // 默认情况下为未登录状态
-        String statusResponse = doHttpRequest("/api/status", true, null, null).body;
-        LoginResponse response = objectMapper.readValue(statusResponse, LoginResponse.class);
-        Assertions.assertFalse(response.isLogin());
-
-        // 获取验证码
-        int responseCode = doHttpRequest("/api/code", false,
-                objectMapper.writeValueAsString(CheckTelServiceTest.VALID_PARAMS), null).code;
-        Assertions.assertEquals(HTTP_OK, responseCode);
-
-        // 登录
-        Map<String, List<String>> responseHeaders = doHttpRequest("/api/login", false,
-                objectMapper.writeValueAsString(CheckTelServiceTest.VALID_PARAMS_CODE), null).headers;
-        List<String> setCookie = responseHeaders.get("Set-Cookie");
-
         // 得到cookie
-        String sessionId = getSessionIdFromSetCookie(setCookie.stream().filter(cookie -> cookie.contains("JSESSIONID"))
-                .findFirst()
-                .get());
+        String sessionId = loginAndGetCookie();
 
         // 此时应该为登录状态
-        statusResponse = doHttpRequest("/api/status", true, null, sessionId).body;
+        String statusResponse = doHttpRequest("/api/status", true, null, sessionId).body;
 
-        response = objectMapper.readValue(statusResponse, LoginResponse.class);
+        LoginResponse response = objectMapper.readValue(statusResponse, LoginResponse.class);
         Assertions.assertTrue(response.isLogin());
         Assertions.assertNotNull(CheckTelServiceTest.VALID_PARAMS.getTel(), response.getUser().getTel());
 
@@ -97,11 +47,6 @@ public class AuthIntegrationTest {
         statusResponse = doHttpRequest("/api/status", true, null, sessionId).body;
         response = objectMapper.readValue(statusResponse, LoginResponse.class);
         Assertions.assertFalse(response.isLogin());
-    }
-
-    private String getSessionIdFromSetCookie(String session) {
-        int semiColonIndex = session.indexOf(";");
-        return session.substring(0, semiColonIndex);
     }
 
     @Test
@@ -133,11 +78,4 @@ public class AuthIntegrationTest {
                 .code();
         Assertions.assertEquals(HTTP_UNAUTHORIZED, responseCode);
     }
-
-
-    private String getUrl(String apiName) {
-        // 获取集成测试的端口号
-        return "http://localhost:" + environment.getProperty("local.server.port") + apiName;
-    }
-
 }
