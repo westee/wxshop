@@ -13,6 +13,8 @@ public class Response<T> {
         return new Response<T>(message, object);
     }
 
+    public Response(){}
+
     public Response(String message, T data) {
         this.message = message;
         this.data = data;

@@ -2,6 +2,7 @@ package com.westee.wxshop.generate;
 
 import java.util.Date;
 
+
 public class Goods {
     /**
      *
