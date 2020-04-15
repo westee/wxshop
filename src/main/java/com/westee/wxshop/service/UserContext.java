@@ -1,5 +1,7 @@
 package com.westee.wxshop.service;
 
+import com.westee.wxshop.generate.User;
+
 public class UserContext {
     private static ThreadLocal<User> currentUser = new ThreadLocal<>();
 

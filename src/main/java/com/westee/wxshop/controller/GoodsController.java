@@ -1,7 +1,8 @@
 package com.westee.wxshop.controller;
 
-import com.westee.wxshop.dao.GoodsDao;
+import com.westee.wxshop.entity.PageResponse;
 import com.westee.wxshop.entity.Response;
+import com.westee.wxshop.generate.Goods;
 import com.westee.wxshop.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -65,8 +66,11 @@ public class GoodsController {
      * }
      */
     // @formatter:on
-    @GetMapping
-    public void getGoods() {
+    @GetMapping("/goods")
+    public PageResponse<Goods> getGoods(@RequestParam("pageNum")Integer pageNum,
+                                 @RequestParam("pageSize")Integer pageSize,
+                                 @RequestParam(value = "shopId", required = false)Integer shopId) {
+        return goodsService.getGoods(pageNum, pageSize, shopId);
     }
 
     // @formatter:off
