@@ -1,6 +1,5 @@
 package com.westee.wxshop.service;
 
-import com.westee.wxshop.generate.User;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;

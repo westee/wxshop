@@ -2,17 +2,9 @@ package com.westee.wxshop.controller;
 
 import com.westee.wxshop.dao.GoodsDao;
 import com.westee.wxshop.entity.Response;
-import com.westee.wxshop.generate.Goods;
 import com.westee.wxshop.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -73,6 +65,7 @@ public class GoodsController {
      * }
      */
     // @formatter:on
+    @GetMapping
     public void getGoods() {
     }
 

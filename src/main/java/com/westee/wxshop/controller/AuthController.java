@@ -1,7 +1,6 @@
 package com.westee.wxshop.controller;
 
 import com.westee.wxshop.entity.LoginResponse;
-import com.westee.wxshop.generate.User;
 import com.westee.wxshop.service.AuthService;
 import com.westee.wxshop.service.CheckTelService;
 import com.westee.wxshop.service.UserContext;

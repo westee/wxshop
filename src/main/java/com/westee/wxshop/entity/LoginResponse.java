@@ -1,7 +1,5 @@
 package com.westee.wxshop.entity;
 
-import com.westee.wxshop.generate.User;
-
 public class LoginResponse {
     private boolean login;
     private User user;

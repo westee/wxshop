@@ -1,10 +1,6 @@
 package com.westee.wxshop.dao;
 
 import com.westee.wxshop.entity.DataStatus;
-import com.westee.wxshop.generate.Goods;
-import com.westee.wxshop.generate.GoodsMapper;
-import com.westee.wxshop.generate.UserMapper;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -2,8 +2,6 @@ package com.westee.wxshop.service;
 
 import com.westee.wxshop.dao.GoodsDao;
 import com.westee.wxshop.dao.ShopDao;
-import com.westee.wxshop.generate.Goods;
-import com.westee.wxshop.generate.Shop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
