@@ -197,7 +197,17 @@ public class GoodsController {
      * }
      */
     // @formatter:on
-    public void updateGoods() {
+    @ResponseBody
+    public Response<Goods> updateGoods(Goods goods, HttpServletResponse response) {
+        try{
+            return Response.of(goodsService.updateGoods(goods));
+        } catch(GoodsService.NotAuthorized e){
+            response.setStatus(response.SC_FORBIDDEN);
+            return Response.of(e.getMessage(), null);
+        } catch(GoodsService.ResourceNotFoundException e){
+            response.setStatus(response.SC_NOT_FOUND);
+            return Response.of(e.getMessage(), null);
+        }
     }
 
     // @formatter:off
@@ -247,6 +257,7 @@ public class GoodsController {
      */
     // @formatter:on
     @DeleteMapping("/goods/{id}")
+    @ResponseBody
     public Response<Goods> deleteGoods(@PathVariable("id") Long goodsId, HttpServletResponse response) {
         try{
             response.setStatus(response.SC_NO_CONTENT);
@@ -254,7 +265,7 @@ public class GoodsController {
         } catch(GoodsService.NotAuthorized e){
             response.setStatus(response.SC_FORBIDDEN);
             return Response.of(e.getMessage(), null);
-        } catch(GoodsDao.ResourceNotFoundException e){
+        } catch(GoodsService.ResourceNotFoundException e){
             response.setStatus(response.SC_NOT_FOUND);
             return Response.of(e.getMessage(), null);
         }
