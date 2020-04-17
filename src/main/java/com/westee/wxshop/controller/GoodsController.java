@@ -65,11 +65,25 @@ public class GoodsController {
      * "message": "Unauthorized"
      * }
      */
+    /**
+     *
+     * @param pageNum
+     * @param pageSize
+     * @param shopId
+     * @return
+     */
+    /**
+     *
+     * @param pageNum
+     * @param pageSize
+     * @param shopId
+     * @return 商品列表
+     */
     // @formatter:on
     @GetMapping("/goods")
-    public PageResponse<Goods> getGoods(@RequestParam("pageNum")Integer pageNum,
-                                 @RequestParam("pageSize")Integer pageSize,
-                                 @RequestParam(value = "shopId", required = false)Integer shopId) {
+    public PageResponse<Goods> getGoods(@RequestParam("pageNum") Integer pageNum,
+                                        @RequestParam("pageSize") Integer pageSize,
+                                        @RequestParam(value = "shopId", required = false) Integer shopId) {
         return goodsService.getGoods(pageNum, pageSize, shopId);
     }
 
@@ -128,6 +142,7 @@ public class GoodsController {
      * 创建商品
      * 成功返回201
      * 没有权限则抛出异常，返回403
+     *
      * @param goods    goods to be created
      * @param response the HTTP response
      * @return the newly created goods
@@ -196,19 +211,26 @@ public class GoodsController {
      * "message": "Unauthorized"
      * }
      */
+    /**
+     *
+     * @param goods
+     * @param response
+     * @return 更新的商品信息
+     */
     // @formatter:on
     @ResponseBody
     public Response<Goods> updateGoods(Goods goods, HttpServletResponse response) {
-        try{
+        try {
             return Response.of(goodsService.updateGoods(goods));
-        } catch(GoodsService.NotAuthorized e){
+        } catch (GoodsService.NotAuthorized e) {
             response.setStatus(response.SC_FORBIDDEN);
             return Response.of(e.getMessage(), null);
-        } catch(GoodsService.ResourceNotFoundException e){
+        } catch (GoodsService.ResourceNotFoundException e) {
             response.setStatus(response.SC_NOT_FOUND);
             return Response.of(e.getMessage(), null);
         }
     }
+
 
     // @formatter:off
     /**
@@ -259,13 +281,13 @@ public class GoodsController {
     @DeleteMapping("/goods/{id}")
     @ResponseBody
     public Response<Goods> deleteGoods(@PathVariable("id") Long goodsId, HttpServletResponse response) {
-        try{
+        try {
             response.setStatus(response.SC_NO_CONTENT);
             return Response.of(goodsService.deleteGoodsById(goodsId));
-        } catch(GoodsService.NotAuthorized e){
+        } catch (GoodsService.NotAuthorized e) {
             response.setStatus(response.SC_FORBIDDEN);
             return Response.of(e.getMessage(), null);
-        } catch(GoodsService.ResourceNotFoundException e){
+        } catch (GoodsService.ResourceNotFoundException e) {
             response.setStatus(response.SC_NOT_FOUND);
             return Response.of(e.getMessage(), null);
         }

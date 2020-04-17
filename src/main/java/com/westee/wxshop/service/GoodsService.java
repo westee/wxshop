@@ -25,7 +25,7 @@ public class GoodsService {
     public Goods createGoods(Goods goods) {
         Shop shop = shopMapper.selectByPrimaryKey(goods.getId());
 
-        if (Objects.equals(shop.getOwnerUserId(), UserContext.getCurrentUser().getId())) {
+        if (shop != null && Objects.equals(shop.getOwnerUserId(), UserContext.getCurrentUser().getId())) {
             long id = goodsMapper.insert(goods);
             goods.setId(id);
             return goods;
@@ -37,7 +37,7 @@ public class GoodsService {
     public Goods deleteGoodsById(Long goodsId) {
         Shop shop = shopMapper.selectByPrimaryKey(goodsId);
 
-        if (Objects.equals(shop.getOwnerUserId(), UserContext.getCurrentUser().getId())) {
+        if (shop == null || Objects.equals(shop.getOwnerUserId(), UserContext.getCurrentUser().getId())) {
             Goods goods = goodsMapper.selectByPrimaryKey(goodsId);
 
             if (goods == null) {
@@ -45,8 +45,8 @@ public class GoodsService {
             }
 
             goods.setStatus(DataStatus.DELETED.getName());
-             goodsMapper.updateByPrimaryKey(goods);
-             return goods;
+            goodsMapper.updateByPrimaryKey(goods);
+            return goods;
         } else {
             throw new NotAuthorized("无权访问");
         }
@@ -61,11 +61,11 @@ public class GoodsService {
 
         GoodsExample page = new GoodsExample();
         page.setLimit(pageSize);
-        page.setOffset((pageNum-1)*pageSize);
+        page.setOffset((pageNum - 1) * pageSize);
 
         List<Goods> pageGoods = goodsMapper.selectByExample(page);
 
-        return PageResponse.pageData(pageNum, pageSize, totalPage , pageGoods);
+        return PageResponse.pageData(pageNum, pageSize, totalPage, pageGoods);
     }
 
     public int countGoods(Integer shopId) {
@@ -82,17 +82,17 @@ public class GoodsService {
         }
     }
 
-    public Goods updateGoods(Goods goods){
+    public Goods updateGoods(Goods goods) {
         Shop shop = shopMapper.selectByPrimaryKey(goods.getId());
 
         if (Objects.equals(shop.getOwnerUserId(), UserContext.getCurrentUser().getId())) {
-           GoodsExample byId = new GoodsExample();
-           byId.createCriteria().andIdEqualTo(goods.getId());
-           int affectedRows = goodsMapper.updateByExample(goods, byId);
-           if(affectedRows == 0){
-               throw new ResourceNotFoundException("未找到");
-           }
-           return goods;
+            GoodsExample byId = new GoodsExample();
+            byId.createCriteria().andIdEqualTo(goods.getId());
+            int affectedRows = goodsMapper.updateByExample(goods, byId);
+            if (affectedRows == 0) {
+                throw new ResourceNotFoundException("未找到");
+            }
+            return goods;
         } else {
             throw new NotAuthorized("无权访问");
         }
