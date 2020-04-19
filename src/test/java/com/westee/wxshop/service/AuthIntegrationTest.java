@@ -22,16 +22,15 @@ import java.util.Map;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = WxshopApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application.yml")
+@TestPropertySource(properties = {"spring.config.location=classpath:test-application.yml"})
 public class AuthIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     public void loginLogoutTest() throws JsonProcessingException {
         // 得到cookie
-        String sessionId = loginAndGetCookie();
+        String sessionId = loginAndGetCookie().cookie;
 
         // 此时应该为登录状态
         String statusResponse = doHttpRequest("/api/status", true, null, sessionId).body;

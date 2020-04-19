@@ -55,8 +55,7 @@ public class CheckTelService {
             pageCondition.setOffset((pageNum - 1) * pageSize);
 
             List<Shop> pagedShops = shopMapper.selectByExample(pageCondition);
-
-            return PageResponse.pagedData(pageNum, pageSize, totalPage, pagedShops);
+            return PageResponse.pageData(pageNum, pageSize, totalPage, pagedShops);
         }
 
         public Shop createShop(Shop shop, Long creatorId) {

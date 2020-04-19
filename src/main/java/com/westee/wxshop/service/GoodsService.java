@@ -24,9 +24,10 @@ public class GoodsService {
     }
 
     public Goods createGoods(Goods goods) {
-        Shop shop = shopMapper.selectByPrimaryKey(goods.getId());
+        Shop shop = shopMapper.selectByPrimaryKey(goods.getShopId());
 
-        if (shop != null && Objects.equals(shop.getOwnerUserId(), UserContext.getCurrentUser().getId())) {
+        if (Objects.equals(shop.getOwnerUserId(), UserContext.getCurrentUser().getId())) {
+            goods.setStatus(DataStatus.OK.getName());
             long id = goodsMapper.insert(goods);
             goods.setId(id);
             return goods;

@@ -1,6 +1,7 @@
 package com.westee.wxshop.service;
 
 import com.westee.wxshop.entity.DataStatus;
+import com.westee.wxshop.entity.HttpException;
 import com.westee.wxshop.entity.PageResponse;
 import com.westee.wxshop.generate.*;
 import org.junit.jupiter.api.*;
@@ -62,9 +63,10 @@ class GoodsServiceTest {
     void createGoodsFailIfIsOwner() {
         // 用户id改变 ，在创建商品时应该抛出错误
         when(shop.getOwnerUserId()).thenReturn(12L);
-        assertThrows(GoodsService.NotAuthorized.class, ()->{
+        HttpException exception = assertThrows(HttpException.class, ()->{
             goodsService.createGoods(goods);
         });
+        assertEquals(403, exception.getStatusCode());
     }
 
     @Test
@@ -73,9 +75,10 @@ class GoodsServiceTest {
         when(shop.getOwnerUserId()).thenReturn(1L);
         when(goodsMapper.selectByPrimaryKey(goodsToBeDeleted)).thenReturn(null);
 
-        assertThrows(GoodsService.ResourceNotFoundException.class, ()->{
+        HttpException exception = assertThrows(HttpException.class, ()->{
             goodsService.deleteGoodsById(goodsToBeDeleted);
         });
+        assertEquals(404, exception.getStatusCode());
     }
 
     @Test
@@ -83,9 +86,10 @@ class GoodsServiceTest {
         long goodsToBeDeleted = 233;
         when(shop.getOwnerUserId()).thenReturn(2L);
 
-        assertThrows(GoodsService.NotAuthorized.class, ()->{
+        HttpException exception = assertThrows(HttpException.class, ()->{
             goodsService.deleteGoodsById(goodsToBeDeleted);
         });
+        assertEquals(401, exception.getStatusCode());
     }
 
     @Test
