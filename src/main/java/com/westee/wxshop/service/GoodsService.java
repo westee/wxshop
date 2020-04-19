@@ -1,6 +1,7 @@
 package com.westee.wxshop.service;
 
 import com.westee.wxshop.entity.DataStatus;
+import com.westee.wxshop.entity.HttpException;
 import com.westee.wxshop.entity.PageResponse;
 import com.westee.wxshop.generate.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class GoodsService {
             goods.setId(id);
             return goods;
         } else {
-            throw new NotAuthorized("无权访问");
+            throw HttpException.forbidden("无权访问");
         }
     }
 
@@ -41,14 +42,14 @@ public class GoodsService {
             Goods goods = goodsMapper.selectByPrimaryKey(goodsId);
 
             if (goods == null) {
-                throw new ResourceNotFoundException("商品未找到");
+                throw HttpException.notFound("商品未找到");
             }
 
             goods.setStatus(DataStatus.DELETED.getName());
             goodsMapper.updateByPrimaryKey(goods);
             return goods;
         } else {
-            throw new NotAuthorized("无权访问");
+            throw HttpException.notAuthorized("无权访问");
         }
     }
 
@@ -90,23 +91,11 @@ public class GoodsService {
             byId.createCriteria().andIdEqualTo(goods.getId());
             int affectedRows = goodsMapper.updateByExample(goods, byId);
             if (affectedRows == 0) {
-                throw new ResourceNotFoundException("未找到");
+                throw HttpException.notFound("未找到");
             }
             return goods;
         } else {
-            throw new NotAuthorized("无权访问");
-        }
-    }
-
-    public static class NotAuthorized extends RuntimeException {
-        public NotAuthorized(String message) {
-            super(message);
-        }
-    }
-
-    public static class ResourceNotFoundException extends RuntimeException {
-        public ResourceNotFoundException(String message) {
-            super(message);
+            throw HttpException.forbidden("无权访问");
         }
     }
 }

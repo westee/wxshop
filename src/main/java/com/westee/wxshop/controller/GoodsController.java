@@ -1,5 +1,6 @@
 package com.westee.wxshop.controller;
 
+import com.westee.wxshop.entity.HttpException;
 import com.westee.wxshop.entity.PageResponse;
 import com.westee.wxshop.entity.Response;
 import com.westee.wxshop.generate.Goods;
@@ -73,7 +74,6 @@ public class GoodsController {
      * @return
      */
     /**
-     *
      * @param pageNum
      * @param pageSize
      * @param shopId
@@ -155,8 +155,8 @@ public class GoodsController {
         response.setStatus(HttpServletResponse.SC_CREATED);
         try {
             return Response.of(goodsService.createGoods(goods));
-        } catch (GoodsService.NotAuthorized e) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } catch (HttpException e) {
+            response.setStatus(e.getStatusCode());
             return Response.of(e.getMessage(), null);
         }
     }
@@ -212,7 +212,6 @@ public class GoodsController {
      * }
      */
     /**
-     *
      * @param goods
      * @param response
      * @return 更新的商品信息
@@ -222,11 +221,8 @@ public class GoodsController {
     public Response<Goods> updateGoods(Goods goods, HttpServletResponse response) {
         try {
             return Response.of(goodsService.updateGoods(goods));
-        } catch (GoodsService.NotAuthorized e) {
-            response.setStatus(response.SC_FORBIDDEN);
-            return Response.of(e.getMessage(), null);
-        } catch (GoodsService.ResourceNotFoundException e) {
-            response.setStatus(response.SC_NOT_FOUND);
+        } catch (HttpException e) {
+            response.setStatus(e.getStatusCode());
             return Response.of(e.getMessage(), null);
         }
     }
@@ -284,11 +280,8 @@ public class GoodsController {
         try {
             response.setStatus(response.SC_NO_CONTENT);
             return Response.of(goodsService.deleteGoodsById(goodsId));
-        } catch (GoodsService.NotAuthorized e) {
-            response.setStatus(response.SC_FORBIDDEN);
-            return Response.of(e.getMessage(), null);
-        } catch (GoodsService.ResourceNotFoundException e) {
-            response.setStatus(response.SC_NOT_FOUND);
+        } catch (HttpException e) {
+            response.setStatus(e.getStatusCode());
             return Response.of(e.getMessage(), null);
         }
     }
