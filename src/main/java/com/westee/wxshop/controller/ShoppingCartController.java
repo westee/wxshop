@@ -189,7 +189,9 @@ public class ShoppingCartController {
         }
     }
 
-
+    /**
+     * 用来接收添加购物车数据对应的类
+     */
     public static class AddToShoppingCartRequest {
         List<AddToShoppingCartItem> goods;
 
