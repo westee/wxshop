@@ -16,7 +16,7 @@ public interface ShoppingCartQueryMapper {
             @Param("offset") int offset
     );
 
-    List<ShoppingCartData> selectShoppingCartDataByUserIdShopId(
+    List<ShoppingCartData> selectShoppingCartDataByUserId(
             @Param("userId") long userId,
             @Param("shopId") long shopId
     );

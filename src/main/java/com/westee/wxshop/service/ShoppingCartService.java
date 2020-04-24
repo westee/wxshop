@@ -107,7 +107,7 @@ public class ShoppingCartService {
             sqlSession.commit();
         }
 
-        return merge(shoppingCartQueryMapper.selectShoppingCartDataByUserIdShopId(
+        return merge(shoppingCartQueryMapper.selectShoppingCartDataByUserId(
                 UserContext.getCurrentUser().getId(),
                 goods.get(0).getShopId()
         ));
