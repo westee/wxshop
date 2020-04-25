@@ -1,9 +1,11 @@
 package com.westee.wxshop.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.westee.wxshop.entity.LoginResponse;
+import com.westee.wxshop.entity.Response;
 import com.westee.wxshop.generate.User;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.ClassicConfiguration;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +26,7 @@ public class AbstractIntegrationTest {
     @Autowired
     Environment environment;
 
-    public final ObjectMapper objectMapper = new ObjectMapper();
+    public static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${spring.datasource.url}")
     private String databaseUrl;
@@ -98,6 +101,11 @@ public class AbstractIntegrationTest {
             this.code = code;
             this.body = body;
             this.headers = headers;
+        }
+
+        public <T>  T asJsonObject(TypeReference<T> data) throws JsonProcessingException {
+            T result = objectMapper.readValue(body, data);
+            return result;
         }
     }
 

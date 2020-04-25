@@ -21,8 +21,11 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig implements WebMvcConfigurer {
 
+    private final UserService userService;
     @Autowired
-    UserService userService;
+    public ShiroConfig(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
