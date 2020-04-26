@@ -22,7 +22,7 @@
           GOODS.PRICE as GOODS_PRICE,
           GOODS.CREATED_AT as GOODS_CREATED_AT,
           GOODS.UPDATED_AT as GOODS_UPDATED_AT,
-          SHOPPING_CART.NUMBER as GOODS_NUMBER,
+          SHOPPING_CART.NUMBER as GOODS_NUMBER
         from (
              select distinct SHOP_ID
              from SHOPPING_CART
