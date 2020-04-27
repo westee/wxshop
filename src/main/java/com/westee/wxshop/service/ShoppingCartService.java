@@ -74,7 +74,7 @@ public class ShoppingCartService {
     }
 
     @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
-    public ShoppingCartData addToShoppingCart(ShoppingCartController.AddToShoppingCartRequest request) {
+    public ShoppingCartData addToShoppingCart(ShoppingCartController.AddToShoppingCartRequest request, long userId) {
         List<Long> goodsId = request.getGoods()
                 .stream()
                 .map(ShoppingCartController.AddToShoppingCartItem::getId)
@@ -88,12 +88,15 @@ public class ShoppingCartService {
         example.createCriteria().andIdIn(goodsId);
         List<Goods> goods = goodsMapper.selectByExample(example);
 
+        // 商品未找到
         if (goods.stream().map(Goods::getShopId).collect(toSet()).size() != 1) {
             logger.debug("非法请求：{}, {}", goodsId, goods);
             throw HttpException.badRequest("商品ID非法！");
         }
 
+        // 从商品id到商品的映射
         Map<Long, Goods> idToGoodsMap = goods.stream().collect(toMap(Goods::getId, x -> x));
+
 
         List<ShoppingCart> shoppingCartRows = request.getGoods()
                 .stream()
@@ -101,22 +104,21 @@ public class ShoppingCartService {
                 .filter(Objects::nonNull)
                 .collect(toList());
 
+        // 加购物车
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             ShoppingCartMapper mapper = sqlSession.getMapper(ShoppingCartMapper.class);
             shoppingCartRows.forEach(mapper::insert);
             sqlSession.commit();
         }
 
-        return merge(shoppingCartQueryMapper.selectShoppingCartDataByUserId(
-                UserContext.getCurrentUser().getId(),
-                goods.get(0).getShopId()
-        ));
+        return getLatestShoppingCartDataByUserIdShopId(goods.get(0).getShopId(), userId);
     }
 
     private ShoppingCart toShoppingCartRow(ShoppingCartController.AddToShoppingCartItem item,
                                            Map<Long, Goods> idToGoodsMap) {
 
         Goods goods = idToGoodsMap.get(item.getId());
+        // 没有对应商品
         if (goods == null) {
             return null;
         }
@@ -130,5 +132,19 @@ public class ShoppingCartService {
         result.setCreatedAt(new Date());
         result.setUpdatedAt(new Date());
         return result;
+    }
+
+    private ShoppingCartData getLatestShoppingCartDataByUserIdShopId(long shopId, long userId) {
+        List<ShoppingCartData> result = shoppingCartQueryMapper.selectShoppingCartDataByUserId(userId, shopId);
+        return merge(result);
+    }
+
+    public ShoppingCartData deleteGoodsInShoppingCart(long goodsId, long userId) {
+        Goods goods = goodsMapper.selectByPrimaryKey(goodsId);
+        if (goods == null) {
+            throw HttpException.notFound("商品未找到" + goodsId);
+        }
+        shoppingCartQueryMapper.deleteShoppingCart(goodsId, userId);
+        return getLatestShoppingCartDataByUserIdShopId(goods.getShopId(), userId);
     }
 }

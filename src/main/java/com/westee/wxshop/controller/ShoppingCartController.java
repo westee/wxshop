@@ -4,17 +4,13 @@ import com.westee.wxshop.entity.HttpException;
 import com.westee.wxshop.entity.PageResponse;
 import com.westee.wxshop.entity.Response;
 import com.westee.wxshop.entity.ShoppingCartData;
+import com.westee.wxshop.generate.ShoppingCart;
 import com.westee.wxshop.service.ShoppingCartService;
 import com.westee.wxshop.service.UserContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -107,7 +103,6 @@ public class ShoppingCartController {
                 pageSize);
     }
 
-
     // @formatter:off
     /**
      * @api {post} /shoppingCart 加购物车
@@ -183,7 +178,7 @@ public class ShoppingCartController {
     @PostMapping("/shoppingCart")
     public Response<ShoppingCartData> addToShoppingCart(@RequestBody AddToShoppingCartRequest request) {
         try {
-            return Response.of(shoppingCartService.addToShoppingCart(request));
+            return Response.of(shoppingCartService.addToShoppingCart(request, UserContext.getCurrentUser().getId()));
         } catch (HttpException e) {
             return Response.of(e.getMessage(), null);
         }
@@ -280,7 +275,13 @@ public class ShoppingCartController {
      *     }
      */
     // @formatter:on
-    public void deleteShoppingCart() {
+    @DeleteMapping("/shoppingCart/{id}")
+    public Response<ShoppingCartData> deleteGoodsInShoppingCart(@PathVariable("id") long goodsId) {
+        try {
+            return Response.of(shoppingCartService.deleteGoodsInShoppingCart(goodsId, UserContext.getCurrentUser().getId()));
+        } catch (HttpException e){
+            return Response.of(e.getMessage(), null);
+        }
     }
 
 

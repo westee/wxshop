@@ -59,4 +59,11 @@
             <result property="status" column="GOODS_STATUS"/>
         </collection>
     </resultMap>
+
+    <delete id="deleteShoppingCart" parameterType="Map">
+        update SHOPPING_CART
+        set SHOPPING_CART.STATUS = 'deleted', UPDATED_AT = now()
+        where SHOPPING_CART.USER_ID = #{userId}
+        and SHOPPING_CART.GOODS_ID = #{goodsId}
+    </delete>
 </mapper>
