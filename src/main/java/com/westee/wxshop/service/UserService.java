@@ -23,6 +23,7 @@ public class UserService {
         user.setUpdatedAt(new Date());
 
         try {
+            // 并发情况下不能通过查询来判断用户是否存在，电话号码被设置为唯一，因此直接插入并捕捉错误即可。
             userDao.insertUser(user);
         } catch (DuplicateKeyException e) {
             return userDao.getUserByTel(tel);

@@ -6,7 +6,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class CheckAuthCodeService {
+public class CheckSmsAuthCodeService {
+    // conCurrentHashMap 可以并发操作
     private Map<String, String> telToCorrectCode = new ConcurrentHashMap<>();
 
     public void addCode(String tel, String correctCode) {

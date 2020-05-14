@@ -35,6 +35,7 @@ public class AuthIntegrationTest extends AbstractIntegrationTest {
         // 此时应该为登录状态
         String statusResponse = doHttpRequest("/api/status", true, null, sessionId).body;
 
+        // 将statusResponse读取成LoginResponse。
         LoginResponse response = objectMapper.readValue(statusResponse, LoginResponse.class);
         Assertions.assertTrue(response.isLogin());
         Assertions.assertNotNull(CheckTelServiceTest.VALID_PARAMS.getTel(), response.getUser().getTel());

@@ -35,6 +35,7 @@ public class AuthController {
     @PostMapping("/login")
     public LoginResponse login(@RequestBody TelAndCode telAndCode) {
         UsernamePasswordToken token = new UsernamePasswordToken(telAndCode.getTel(), telAndCode.getCode());
+        // 设置记住cookie
         token.setRememberMe(true);
         SecurityUtils.getSubject().login(token);
         return LoginResponse.AlreadyLogin(UserContext.getCurrentUser());
@@ -47,6 +48,8 @@ public class AuthController {
 
     @GetMapping("/status")
     public Object loginStatus() {
+
+        // SecurityUtils.getSubject().getPrincipal() 当前用户的账号
         if (UserContext.getCurrentUser() == null) {
             return LoginResponse.notLogin();
         } else {

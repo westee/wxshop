@@ -14,6 +14,7 @@ public class LoginResponse {
         return new LoginResponse(true, user);
     }
 
+    // json序列化需要一个空构造器
     public LoginResponse() {}
 
     public LoginResponse(boolean login, User user) {

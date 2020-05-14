@@ -17,7 +17,6 @@ public class UserDao {
         this.userMapper = userMapper;
     }
 
-
     public void insertUser(User user) {
             userMapper.insert(user);
     }

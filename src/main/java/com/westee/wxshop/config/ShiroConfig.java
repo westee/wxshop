@@ -43,6 +43,7 @@ public class ShiroConfig implements WebMvcConfigurer {
         pattern.put("/api/login", "anon");
         pattern.put("/api/status", "anon");
         pattern.put("/api/logout", "anon");
+        pattern.put("/api/v1/test", "anon");
         pattern.put("/**", "authc");
 
         // 设置过滤器
@@ -58,15 +59,21 @@ public class ShiroConfig implements WebMvcConfigurer {
     public SecurityManager securityManager(ShiroRealm shiroRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 
+        // shiroRealm配置了用户名和密码的验证规则
         securityManager.setRealm(shiroRealm);
+        // 存放在缓存中的管理器，将来要用redis来替代。
         securityManager.setCacheManager(new MemoryConstrainedCacheManager());
+        // 生成并设置cookie
         securityManager.setSessionManager(new DefaultWebSessionManager());
         SecurityUtils.setSecurityManager(securityManager);
         return securityManager;
     }
 
     @Bean
-    public ShiroRealm myShiroRealm(CheckAuthCodeService checkAuthCodeService) {
-        return new ShiroRealm(checkAuthCodeService);
+    /**
+     * 如何鉴权
+     */
+    public ShiroRealm myShiroRealm(CheckSmsAuthCodeService checkSmsAuthCodeService) {
+        return new ShiroRealm(checkSmsAuthCodeService);
     }
 }

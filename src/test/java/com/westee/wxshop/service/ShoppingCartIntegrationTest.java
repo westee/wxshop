@@ -43,20 +43,5 @@ public class ShoppingCartIntegrationTest extends AbstractIntegrationTest{
         });
     }
 
-    @Test
-    public void canDeleteShoppingCartData() throws JsonProcessingException {
-        UserLoginResponse loginResponse = loginAndGetCookie();
-        PageResponse<ShoppingCartData> response = doHttpRequest("/api/v1/shoppingCart/5",
-                "DELETE", null, loginResponse.cookie).asJsonObject(new TypeReference<PageResponse<ShoppingCartData>>() {
-        });
 
-        assertEquals(2L, response.getData().getShop().getId());
-        assertEquals(1, response.getData().getGoods().size());
-
-        Goods goods = response.getData().getGoods.get(0);
-
-        assertEquals(4L, goods.getId());
-        assertEquals(200, goods.getNumber());
-        assertEquals(DataStatus.OK.getName().toLowerCase(), goods.getStatus());
-    }
 }

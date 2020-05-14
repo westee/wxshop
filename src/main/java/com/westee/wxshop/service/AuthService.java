@@ -5,21 +5,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
     private final UserService userService;
-    private final CheckAuthCodeService checkAuthCodeService;
+    private final CheckSmsAuthCodeService checkSmsAuthCodeService;
     private final MockSmsCodeService mockSmsCodeService;
 
     public AuthService(UserService userService,
-                       CheckAuthCodeService checkAuthCodeService,
+                       CheckSmsAuthCodeService checkSmsAuthCodeService,
                        MockSmsCodeService mockSmsCodeService) {
         this.userService = userService;
-        this.checkAuthCodeService = checkAuthCodeService;
+        this.checkSmsAuthCodeService = checkSmsAuthCodeService;
         this.mockSmsCodeService = mockSmsCodeService;
     }
 
+    /**
+     * 发送验证码
+     * @param tel 手机号码
+     */
     public void sendAuthCode(String tel) {
-
         userService.createUserIfNotExist(tel);
         String correctCode = mockSmsCodeService.sendSmsCode(tel);
-        checkAuthCodeService.addCode(tel, correctCode);
+        checkSmsAuthCodeService.addCode(tel, correctCode);
     }
 }
