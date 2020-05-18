@@ -1,34 +1,23 @@
 package com.westee.wxshop.controller;
 
 import com.westee.wxshop.api.OrderService;
-import com.westee.wxshop.entity.DataStatus;
-import com.westee.wxshop.entity.HttpException;
-import com.westee.wxshop.entity.Response;
-import com.westee.wxshop.service.UserContext;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1")
 public class OrderController {
-    @Reference(version = "${wxshop.orderservice.version}")
+    @Reference(version = "${wxshop.orderservice.version}",
+            url = "${wxshop.orderservice.url}"
+    )
     private OrderService orderService;
 
     @RequestMapping("/test")
-    public String  testRpc(){
-        orderService.placeOrder(1,2);
+    public String testRpc() {
+        orderService.placeOrder(1, 2);
         return "";
     }
-
 
     // @formatter:off
     /**

@@ -4,6 +4,7 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.westee.wxshop.WxshopApplication;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.westee.wxshop.api.OrderService;
 import com.westee.wxshop.entity.LoginResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,9 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 @SpringBootTest(classes = WxshopApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {"spring.config.location=classpath:test-application.yml"})
 public class AuthIntegrationTest extends AbstractIntegrationTest {
+    @Autowired
+    OrderService orderService;
+
 
     @Test
     public void loginLogoutTest() throws JsonProcessingException {

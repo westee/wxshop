@@ -2,12 +2,14 @@ package com.westee.wxshop.config;
 
 import com.westee.wxshop.service.*;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.crazycake.shiro.RedisCacheManager;
+import org.crazycake.shiro.RedisManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -22,6 +24,12 @@ import java.util.Map;
 public class ShiroConfig implements WebMvcConfigurer {
 
     private final UserService userService;
+
+    @Value("${wxshop.redis.host}")
+    String redisHost;
+    @Value("${wxshop.redis.port}")
+    int redisPort;
+
     @Autowired
     public ShiroConfig(UserService userService) {
         this.userService = userService;
@@ -56,17 +64,26 @@ public class ShiroConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SecurityManager securityManager(ShiroRealm shiroRealm) {
+    public SecurityManager securityManager(ShiroRealm shiroRealm, RedisCacheManager redisCacheManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
 
         // shiroRealm配置了用户名和密码的验证规则
         securityManager.setRealm(shiroRealm);
         // 存放在缓存中的管理器，将来要用redis来替代。
-        securityManager.setCacheManager(new MemoryConstrainedCacheManager());
+        securityManager.setCacheManager(redisCacheManager);
         // 生成并设置cookie
         securityManager.setSessionManager(new DefaultWebSessionManager());
         SecurityUtils.setSecurityManager(securityManager);
         return securityManager;
+    }
+
+    @Bean
+    public RedisCacheManager redisCacheManager(){
+        RedisCacheManager redisCacheManager = new RedisCacheManager();
+        RedisManager redisManager = new RedisManager();
+        redisManager.setHost(redisHost+":"+redisPort);
+        redisCacheManager.setRedisManager(redisManager);
+        return redisCacheManager;
     }
 
     @Bean

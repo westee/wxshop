@@ -4,7 +4,6 @@ import com.westee.wxshop.entity.HttpException;
 import com.westee.wxshop.entity.PageResponse;
 import com.westee.wxshop.entity.Response;
 import com.westee.wxshop.entity.ShoppingCartData;
-import com.westee.wxshop.generate.ShoppingCart;
 import com.westee.wxshop.service.ShoppingCartService;
 import com.westee.wxshop.service.UserContext;
 import org.slf4j.Logger;
@@ -87,8 +86,7 @@ public class ShoppingCartController {
      *     }
      */
     /**
-     *
-     * @param pageNum 页码
+     * @param pageNum  页码
      * @param pageSize 每页元素数量
      * @return 结果
      */
@@ -170,7 +168,6 @@ public class ShoppingCartController {
      *     }
      */
     /**
-     *
      * @param request 加购物车请求
      * @return 添加后的结果
      */
@@ -221,68 +218,67 @@ public class ShoppingCartController {
     }
 
     // @formatter:off
+
     /**
      * @api {delete} /shoppingCart/:goodsId 删除当前用户购物车中指定的商品
      * @apiName DeleteShoppingCart
      * @apiGroup 购物车
-     *
      * @apiHeader {String} Accept application/json
-     *
      * @apiParam {Number} goodsId 要删除的商品ID
-     *
      * @apiSuccess {ShoppingCart} data 更新后的该店铺物品列表
-     *
      * @apiSuccessExample Success-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *       "data": {
-     *           "shop": {
-     *              "id": 12345,
-     *              "name": "我的店铺",
-     *              "description": "我的苹果专卖店",
-     *              "imgUrl": "https://img.url",
-     *              "ownerUserId": 12345,
-     *              "createdAt": "2020-03-22T13:22:03Z",
-     *              "updatedAt": "2020-03-22T13:22:03Z"
-     *            },
-     *            "goods": [
-     *              {
-     *                  "id": 12345,
-     *                  "name": "肥皂",
-     *                  "description": "纯天然无污染肥皂",
-     *                  "details": "这是一块好肥皂",
-     *                  "imgUrl": "https://img.url",
-     *                  "address": "XXX",
-     *                  "price": 500,
-     *                  "number": 10,
-     *                  "createdAt": "2020-03-22T13:22:03Z",
-     *                  "updatedAt": "2020-03-22T13:22:03Z"
-     *              },
-     *              {
-     *                    ...
-     *              }
-     *           ]
-     *         }
-     *       }
-     *     }
-     *
+     * @return ""
+     * HTTP/1.1 200 OK
+     * {
+     * "data": {
+     * "shop": {
+     * "id": 12345,
+     * "name": "我的店铺",
+     * "description": "我的苹果专卖店",
+     * "imgUrl": "https://img.url",
+     * "ownerUserId": 12345,
+     * "createdAt": "2020-03-22T13:22:03Z",
+     * "updatedAt": "2020-03-22T13:22:03Z"
+     * },
+     * "goods": [
+     * {
+     * "id": 12345,
+     * "name": "肥皂",
+     * "description": "纯天然无污染肥皂",
+     * "details": "这是一块好肥皂",
+     * "imgUrl": "https://img.url",
+     * "address": "XXX",
+     * "price": 500,
+     * "number": 10,
+     * "createdAt": "2020-03-22T13:22:03Z",
+     * "updatedAt": "2020-03-22T13:22:03Z"
+     * },
+     * {
+     * ...
+     * }
+     * ]
+     * }
+     * }
+     * }
      * @apiError 401 Unauthorized 若用户未登录
-     *
      * @apiErrorExample Error-Response:
-     *     HTTP/1.1 401 Unauthorized
-     *     {
-     *       "message": "Unauthorized"
-     *     }
+     * HTTP/1.1 401 Unauthorized
+     * {
+     * "message": "Unauthorized"
+     * }
      */
     // @formatter:on
+
+    /**
+     * @param goodsId
+     * @return 更新后的该店铺数据
+     */
     @DeleteMapping("/shoppingCart/{id}")
     public Response<ShoppingCartData> deleteGoodsInShoppingCart(@PathVariable("id") long goodsId) {
         try {
             return Response.of(shoppingCartService.deleteGoodsInShoppingCart(goodsId, UserContext.getCurrentUser().getId()));
-        } catch (HttpException e){
+        } catch (HttpException e) {
             return Response.of(e.getMessage(), null);
         }
     }
-
-
 }
