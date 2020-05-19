@@ -1,0 +1,12 @@
+
+
+wxshop:
+    orderservice:
+        version: 0.0.1
+
+dubbo:
+    registry:
+        address: zookeeper://127.0.0.1:2181
+spring:
+    application:
+        name: wxshop-order

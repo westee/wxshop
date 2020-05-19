@@ -5,7 +5,7 @@ spring:
         password: root
         driver-class-name: com.mysql.cj.jdbc.Driver
     application:
-        name: orderservice
+        name: wxshop-order
 mybatis:
     config-location: classpath:db/mybatis/config.xml
 server:

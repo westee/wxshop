@@ -1,23 +1,15 @@
 package com.westee.wxshop.controller;
 
-import com.westee.wxshop.api.OrderService;
 import org.apache.dubbo.config.annotation.Reference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.westee.api.rpc.OrderService;
 @RestController
 @RequestMapping("/api/v1")
 public class OrderController {
-    @Reference(version = "${wxshop.orderservice.version}",
-            url = "${wxshop.orderservice.url}"
-    )
-    private OrderService orderService;
-
-    @RequestMapping("/test")
-    public String testRpc() {
-        orderService.placeOrder(1, 2);
-        return "";
-    }
+    @Reference(version = "${demo.service.version}")
+    OrderService orderService;
 
     // @formatter:off
     /**
@@ -366,3 +358,4 @@ public class OrderController {
 //        return Response.of(orderService.deleteOrder(orderId, UserContext.getCurrentUser().getId()));
 //    }
 }
+

@@ -1,4 +1,4 @@
-package com.westee.entity;
+package com.westee.wxshop.entity;
 
 import com.westee.wxshop.entity.GoodsWithNumber;
 import com.westee.wxshop.generate.Order;
