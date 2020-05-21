@@ -1,5 +1,3 @@
-
-
 wxshop:
     orderservice:
         version: 0.0.1
@@ -7,6 +5,8 @@ wxshop:
 dubbo:
     registry:
         address: zookeeper://127.0.0.1:2181
+    scan:
+        base-packages: com.westee.order.service;
 spring:
     application:
         name: wxshop-order

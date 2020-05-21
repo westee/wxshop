@@ -1,26 +1,20 @@
 package com.westee.wxshop.service;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.westee.api.rpc.OrderService;
 import com.westee.wxshop.WxshopApplication;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.westee.wxshop.api.OrderService;
 import com.westee.wxshop.entity.LoginResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.List;
-import java.util.Map;
-
-import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 
 @ExtendWith(SpringExtension.class)
@@ -29,7 +23,6 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 public class AuthIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     OrderService orderService;
-
 
     @Test
     public void loginLogoutTest() throws JsonProcessingException {

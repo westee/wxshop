@@ -1,10 +1,9 @@
 package com.westee.wxshop.controller;
 
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.westee.api.rpc.OrderService;
+import com.westee.api.rpc.*;
 @RestController
 @RequestMapping("/api/v1")
 public class OrderController {

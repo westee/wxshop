@@ -48,7 +48,6 @@
                 <version>${dubbo.version}</version>
             </dependency>
 
-
             <!-- Zookeeper dependencies -->
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
@@ -75,7 +74,6 @@
                 <version>6.3.2</version>
                 <scope>test</scope>
             </dependency>
-
 
         </dependencies>
     </dependencyManagement>

@@ -6,16 +6,12 @@
         <groupId>com.westee</groupId>
         <artifactId>wxshop-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>wxshop-main</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>wxshop-main</name>
     <description>wxshop-main</description>
-
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -39,7 +35,6 @@
             <version>2.1.2</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.dubbo/dubbo-spring-boot-starter -->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
@@ -153,7 +148,6 @@
                         <artifactId>mybatis-generator-limit-plugin</artifactId>
                         <version>1.0.4</version>
                     </dependency>
-
                 </dependencies>
             </plugin>
 

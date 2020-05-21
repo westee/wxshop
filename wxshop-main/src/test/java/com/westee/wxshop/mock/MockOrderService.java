@@ -1,10 +1,10 @@
 package com.westee.wxshop.mock;
 
-import com.westee.wxshop.api.OrderService;
+import com.westee.api.rpc.OrderService;
 
 public class MockOrderService implements OrderService {
     @Override
-    public void placeOrder(int goodsId, int number) {
-
+    public String SayHello() {
+        return null;
     }
 }

@@ -3,7 +3,6 @@ package com.westee.wxshop.controller;
 import com.westee.wxshop.entity.HttpException;
 import com.westee.wxshop.entity.PageResponse;
 import com.westee.wxshop.entity.Response;
-import com.westee.wxshop.generate.Shop;
 import com.westee.wxshop.service.ShopService;
 import com.westee.wxshop.service.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
