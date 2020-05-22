@@ -4,40 +4,43 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
-
     <context id="order" targetRuntime="MyBatis3">
+        <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin" />
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
         <plugin type="com.qiukeke.mybatis.plugins.MySQLLimitPlugin" />
-        <plugin type="org.mybatis.generator.plugins.MapperAnnotationPlugin" />
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                            connectionURL="jdbc:mysql://localhost:3306/order?useSSL=false&amp;allowPublicKeyRetrieval=true"
+                        connectionURL="jdbc:mysql://localhost:3307/order?useSSL=false&amp;allowPublicKeyRetrieval=true"
                         userId="root"
                         password="root">
         </jdbcConnection>
 
-        <javaModelGenerator targetPackage="com.westee.wxshop.generate" targetProject="wxshop-api/src/main/java">
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="true" />
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="com.hcsp.api.generate" targetProject="wxshop-api/src/main/java">
             <property name="enableSubPackages" value="true" />
             <property name="trimStrings" value="true" />
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="db.mybatis"  targetProject="wxshop-api/src/main/resources">
+        <sqlMapGenerator targetPackage="db.mybatis"  targetProject="wxshop-order/src/main/resources">
             <property name="enableSubPackages" value="true" />
         </sqlMapGenerator>
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.westee.wxshop.generate"  targetProject="wxshop-api/src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.hcsp.api.generate"  targetProject="wxshop-order/src/main/java">
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
-        <table schema="wxshop" tableName="ORDER" domainObjectName="Order" >
+        <table schema="order" tableName="ORDER" domainObjectName="Order" >
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="ID" sqlStatement="MySql" identity="true" />
         </table>
 
-        <table schema="wxshop" tableName="ORDER_GOODS" domainObjectName="OrderGoods" >
+        <table schema="order" tableName="ORDER_GOODS" domainObjectName="OrderGoods" >
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="ID" sqlStatement="MySql" identity="true" />
-        </table>
 
+        </table>
 
     </context>
 </generatorConfiguration>
