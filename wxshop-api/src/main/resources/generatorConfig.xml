@@ -15,7 +15,11 @@
                         password="root">
         </jdbcConnection>
 
-        <javaModelGenerator targetPackage="com.westee.wxshop.generate" targetProject="wxshop-api/src/main/java">
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="true" />
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="com.westee.api.generate" targetProject="wxshop-api/src/main/java">
             <property name="enableSubPackages" value="true" />
             <property name="trimStrings" value="true" />
         </javaModelGenerator>
@@ -24,16 +28,16 @@
             <property name="enableSubPackages" value="true" />
         </sqlMapGenerator>
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.westee.wxshop.generate"  targetProject="wxshop-api/src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.westee.api.generate"  targetProject="wxshop-api/src/main/java">
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
-        <table schema="wxshop" tableName="ORDER" domainObjectName="Order" >
+        <table schema="order" tableName="ORDER" domainObjectName="Order" >
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="ID" sqlStatement="MySql" identity="true" />
         </table>
 
-        <table schema="wxshop" tableName="ORDER_GOODS" domainObjectName="OrderGoods" >
+        <table schema="order" tableName="ORDER_GOODS" domainObjectName="OrderGoods" >
             <property name="useActualColumnNames" value="false"/>
             <generatedKey column="ID" sqlStatement="MySql" identity="true" />
         </table>

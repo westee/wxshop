@@ -1,6 +1,6 @@
 package com.westee.wxshop.service;
 
-import com.westee.wxshop.entity.DataStatus;
+import com.westee.api.DataStatus;
 import com.westee.wxshop.entity.HttpException;
 import com.westee.wxshop.entity.PageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
