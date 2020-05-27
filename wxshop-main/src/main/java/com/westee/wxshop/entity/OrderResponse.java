@@ -1,5 +1,8 @@
 package com.westee.wxshop.entity;
 
+import com.westee.api.generate.Order;
+import com.westee.wxshop.generate.Shop;
+
 import java.util.List;
 
 public class OrderResponse extends Order {

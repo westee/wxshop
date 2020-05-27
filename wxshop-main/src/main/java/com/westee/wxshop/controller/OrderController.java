@@ -1,14 +1,18 @@
 package com.westee.wxshop.controller;
 
-import org.apache.dubbo.config.annotation.Reference;
+import com.westee.api.data.OrderInfo;
+import com.westee.wxshop.entity.OrderResponse;
+import com.westee.wxshop.entity.Response;
+import com.westee.wxshop.service.OrderService;
+import com.westee.wxshop.service.UserContext;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.westee.api.rpc.*;
 @RestController
 @RequestMapping("/api/v1")
 public class OrderController {
-    @Reference(version = "${demo.service.version}")
-    OrderService orderService;
+    private OrderService orderService;
 
     // @formatter:off
     /**
@@ -189,11 +193,11 @@ public class OrderController {
      * @param orderInfo 订单信息
      * @return 响应
      */
-//    @PostMapping("/order")
-//    public Response<OrderResponse> createOrder(@RequestBody OrderInfo orderInfo) {
-//        orderService.deductStock(orderInfo);
-//        return Response.of(orderService.createOrder(orderInfo, UserContext.getCurrentUser().getId()));
-//    }
+    @PostMapping("/order")
+    public Response<OrderResponse> createOrder(@RequestBody OrderInfo orderInfo) {
+        orderService.deductStock(orderInfo);
+        return Response.of(orderService.createOrder(orderInfo, UserContext.getCurrentUser().getId()));
+    }
 
     // @formatter:off
     /**

@@ -7,6 +7,10 @@ import com.westee.wxshop.entity.HttpException;
 import com.westee.wxshop.entity.PageResponse;
 import com.westee.wxshop.entity.ShoppingCartData;
 import com.westee.wxshop.entity.ShoppingCartGoods;
+import com.westee.wxshop.generate.Goods;
+import com.westee.wxshop.generate.GoodsMapper;
+import com.westee.wxshop.generate.ShoppingCart;
+import com.westee.wxshop.generate.ShoppingCartMapper;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
@@ -14,12 +18,10 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationPropertiesBean;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -32,12 +34,17 @@ public class ShoppingCartService {
     private ShoppingCartQueryMapper shoppingCartQueryMapper;
     private GoodsMapper goodsMapper;
     private SqlSessionFactory sqlSessionFactory;
+    private GoodsService goodsService;
 
     @Autowired
-    public ShoppingCartService(ShoppingCartQueryMapper shoppingCartQueryMapper, GoodsMapper goodsMapper, SqlSessionFactory sqlSessionFactory) {
+    public ShoppingCartService(ShoppingCartQueryMapper shoppingCartQueryMapper,
+                               GoodsMapper goodsMapper,
+                               SqlSessionFactory sqlSessionFactory,
+                               GoodsService goodsService) {
         this.shoppingCartQueryMapper = shoppingCartQueryMapper;
         this.goodsMapper = goodsMapper;
         this.sqlSessionFactory = sqlSessionFactory;
+        this.goodsService = goodsService;
     }
 
     public PageResponse<ShoppingCartData> getShoppingCartOfUser(Long userId,
@@ -79,19 +86,17 @@ public class ShoppingCartService {
             throw HttpException.badRequest("商品ID为空！");
         }
 
-        GoodsExample example = new GoodsExample();
-        example.createCriteria().andIdIn(goodsId);
-        List<Goods> goods = goodsMapper.selectByExample(example);
 
-        // 商品未找到
-        if (goods.stream().map(Goods::getShopId).collect(toSet()).size() != 1) {
-            logger.debug("非法请求：{}, {}", goodsId, goods);
-            throw HttpException.badRequest("商品ID非法！");
-        }
+
+
 
         // 从商品id到商品的映射
-        Map<Long, Goods> idToGoodsMap = goods.stream().collect(toMap(Goods::getId, x -> x));
-
+        Map<Long, Goods> idToGoodsMap = goodsService.getIdToGoodsMap(goodsId);
+        // 商品未找到
+        if (idToGoodsMap.values().stream().map(Goods::getShopId).collect(toSet()).size() != 1) {
+            logger.debug("非法请求：{}, {}", goodsId, idToGoodsMap.values());
+            throw HttpException.badRequest("商品ID非法！");
+        }
 
         List<ShoppingCart> shoppingCartRows = request.getGoods()
                 .stream()
@@ -106,7 +111,7 @@ public class ShoppingCartService {
             sqlSession.commit();
         }
 
-        return getLatestShoppingCartDataByUserIdShopId(goods.get(0).getShopId(), userId);
+        return getLatestShoppingCartDataByUserIdShopId(new ArrayList<>(idToGoodsMap.values()).get(0).getShopId(), userId);
     }
 
     private ShoppingCart toShoppingCartRow(ShoppingCartController.AddToShoppingCartItem item,

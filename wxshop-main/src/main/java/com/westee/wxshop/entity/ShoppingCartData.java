@@ -1,6 +1,7 @@
 package com.westee.wxshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.westee.wxshop.generate.Shop;
 
 import java.util.List;
 

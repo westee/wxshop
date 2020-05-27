@@ -8,7 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 
 @Service
@@ -21,6 +25,16 @@ public class GoodsService {
     public GoodsService(GoodsMapper goodsMapper, ShopMapper shopMapper) {
         this.goodsMapper = goodsMapper;
         this.shopMapper = shopMapper;
+    }
+
+    public Map<Long, Goods> getIdToGoodsMap(List<Long> goodsId){
+        GoodsExample example = new GoodsExample();
+        example.createCriteria().andIdIn(goodsId);
+        List<Goods> goods = goodsMapper.selectByExample(example);
+
+        // 从商品id到商品的映射
+        return  goods.stream().collect(toMap(Goods::getId, x -> x));
+
     }
 
     public Goods createGoods(Goods goods) {

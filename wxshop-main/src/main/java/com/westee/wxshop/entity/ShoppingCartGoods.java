@@ -1,5 +1,7 @@
 package com.westee.wxshop.entity;
 
+import com.westee.wxshop.generate.Goods;
+
 public class ShoppingCartGoods extends Goods {
     private int number;
 

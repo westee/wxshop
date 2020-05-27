@@ -1,11 +1,11 @@
 package com.westee.order.service;
 
-
 import com.westee.api.DataStatus;
 import com.westee.api.data.OrderInfo;
 import com.westee.api.generate.Order;
 import com.westee.api.generate.OrderMapper;
-import com.westee.api.rpc.OrderService;
+import com.westee.api.rpc.OrderRpcService;
+import com.westee.order.mapper.MyOrderMapper;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,14 +13,18 @@ import java.util.Date;
 import java.util.function.BooleanSupplier;
 
 @Service(version = "${wxshop.orderservice.version}")
-public class RpcOrderServiceImpl implements OrderService {
+public class RpcOrderRpcServiceImpl implements OrderRpcService {
     @Autowired
     private OrderMapper orderMapper;
 
+    @Autowired
+    private MyOrderMapper myOrderMapper;
+
     @Override
-    public Order createOrder(OrderInfo userId, Order order) {
+    public Order createOrder(OrderInfo orderInfo, Order order) {
         insertOrder(order);
-        return null;
+        myOrderMapper.insertOrders(orderInfo);
+        return order;
     }
 
     private void insertOrder(Order order) {
@@ -34,6 +38,9 @@ public class RpcOrderServiceImpl implements OrderService {
         order.setExpressId(null);
         order.setCreatedAt(new Date());
         order.setUpdatedAt(new Date());
+
+        long id = orderMapper.insert(order);
+        order.setId(id);
     }
 
     private void verify(BooleanSupplier supplier, String message) {

@@ -1,7 +1,7 @@
 package com.westee.wxshop.service;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import com.westee.api.rpc.OrderService;
+import com.westee.api.rpc.OrderRpcService;
 import com.westee.wxshop.WxshopApplication;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.westee.wxshop.entity.LoginResponse;
@@ -22,7 +22,7 @@ import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 @TestPropertySource(properties = {"spring.config.location=classpath:test-application.yml"})
 public class AuthIntegrationTest extends AbstractIntegrationTest {
     @Autowired
-    OrderService orderService;
+    OrderRpcService orderRpcService;
 
     @Test
     public void loginLogoutTest() throws JsonProcessingException {
