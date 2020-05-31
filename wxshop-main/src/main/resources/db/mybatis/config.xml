@@ -12,9 +12,11 @@
         <typeAlias type="com.westee.wxshop.entity.ShoppingCartData" alias="ShoppingCartData"/>
         <typeAlias type="com.westee.wxshop.entity.ShoppingCartGoods" alias="ShoppingCartGoods"/>
         <typeAlias type="com.westee.wxshop.generate.Shop" alias="Shop"/>
+        <typeAlias type="com.westee.api.data.GoodsInfo" alias="GoodsInfo"/>
     </typeAliases>
     <!-- 配置映射文件：用来配置sql语句和结果集类型等 -->
     <mappers>
+        <mapper resource="db/mybatis/GoodsStockMapper.xml"/>
         <mapper resource="db/mybatis/UserMapper.xml"/>
         <mapper resource="db/mybatis/ShopMapper.xml"/>
         <mapper resource="db/mybatis/GoodsMapper.xml"/>
