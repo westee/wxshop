@@ -9,7 +9,6 @@ import com.westee.wxshop.entity.GoodsWithNumber;
 import com.westee.wxshop.entity.HttpException;
 import com.westee.wxshop.entity.OrderResponse;
 import com.westee.wxshop.generate.Goods;
-import com.westee.wxshop.generate.GoodsMapper;
 import com.westee.wxshop.generate.ShopMapper;
 import com.westee.wxshop.generate.UserMapper;
 import org.apache.dubbo.config.annotation.Reference;
@@ -20,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -101,8 +99,8 @@ public class OrderService {
      * @param orderInfo
      * @return 全部扣减成功，返回true，否则返回false。
      */
-    private boolean deductStock(OrderInfo orderInfo) {
-        SqlSession session;
+    // RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE
+    public boolean deductStock(OrderInfo orderInfo) {
         try (SqlSession sqlSession = sessionFactory.openSession(false)) {
             for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
                 if (goodsStockMapper.deductStock(goodsInfo) <= 0) {
@@ -124,9 +122,8 @@ public class OrderService {
     }
 
 
-    private BigDecimal calculateTotalPrice(OrderInfo orderInfo, Map<Long, Goods> idToGoodsMap) {
-
-        BigDecimal result = BigDecimal.ZERO;
+    private long calculateTotalPrice(OrderInfo orderInfo, Map<Long, Goods> idToGoodsMap) {
+        long result = 0;
         for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
             Goods goods = idToGoodsMap.get(goodsInfo.getId());
             if (goods == null) {
@@ -136,7 +133,7 @@ public class OrderService {
                 throw HttpException.badRequest("number非法" + goodsInfo.getNumber());
             }
 
-            result = result.add(goods.getPrice().multiply(new BigDecimal(goodsInfo.getNumber())));
+            result = result + (goods.getPrice()*goodsInfo.getNumber());
         }
         return result;
     }

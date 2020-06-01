@@ -194,7 +194,7 @@ public class OrderController {
      * @return 响应
      */
     @PostMapping("/order")
-    public Response<OrderResponse> createOrder(@RequestBody OrderInfo orderInfo) {
+    public Response<OrderResponse> createOrder(@RequestBody OrderInfo orderInfo) throws Exception {
         orderService.deductStock(orderInfo);
         return Response.of(orderService.createOrder(orderInfo, UserContext.getCurrentUser().getId()));
     }

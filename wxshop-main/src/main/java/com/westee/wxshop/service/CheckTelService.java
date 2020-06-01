@@ -4,6 +4,9 @@ import com.westee.wxshop.controller.AuthController;
 import com.westee.api.DataStatus;
 import com.westee.wxshop.entity.HttpException;
 import com.westee.wxshop.entity.PageResponse;
+import com.westee.wxshop.generate.Shop;
+import com.westee.wxshop.generate.ShopExample;
+import com.westee.wxshop.generate.ShopMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.kevinsawicki.http.HttpRequest;
 import com.westee.wxshop.entity.LoginResponse;
+import com.westee.wxshop.generate.User;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.ClassicConfiguration;
 import org.junit.jupiter.api.Assertions;
@@ -85,6 +86,22 @@ public class AbstractIntegrationTest {
 
         public UserLoginResponse(String cookie, User user) {
             this.cookie = cookie;
+            this.user = user;
+        }
+
+        public String getCookie() {
+            return cookie;
+        }
+
+        public void setCookie(String cookie) {
+            this.cookie = cookie;
+        }
+
+        public User getUser() {
+            return user;
+        }
+
+        public void setUser(User user) {
             this.user = user;
         }
     }
