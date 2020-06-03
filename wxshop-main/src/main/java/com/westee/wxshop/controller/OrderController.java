@@ -1,6 +1,7 @@
 package com.westee.wxshop.controller;
 
 import com.westee.api.data.OrderInfo;
+import com.westee.wxshop.entity.HttpException;
 import com.westee.wxshop.entity.OrderResponse;
 import com.westee.wxshop.entity.Response;
 import com.westee.wxshop.service.OrderService;
@@ -9,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/api/v1")
 public class OrderController {
@@ -194,9 +198,15 @@ public class OrderController {
      * @return 响应
      */
     @PostMapping("/order")
-    public Response<OrderResponse> createOrder(@RequestBody OrderInfo orderInfo) throws Exception {
-        orderService.deductStock(orderInfo);
-        return Response.of(orderService.createOrder(orderInfo, UserContext.getCurrentUser().getId()));
+    public Response<OrderResponse> createOrder(@RequestBody OrderInfo orderInfo, HttpServletResponse response) throws Exception {
+        try {
+            orderService.deductStock(orderInfo);
+            return Response.of(orderService.createOrder(orderInfo, UserContext.getCurrentUser().getId()));
+        } catch (HttpException e){
+            response.setStatus(e.getStatusCode());
+            return Response.of(e.getMessage(), null);
+        }
+
     }
 
     // @formatter:off

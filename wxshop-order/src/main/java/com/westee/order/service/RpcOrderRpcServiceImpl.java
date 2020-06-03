@@ -2,6 +2,8 @@ package com.westee.order.service;
 
 import com.westee.api.DataStatus;
 import com.westee.api.data.OrderInfo;
+import com.westee.api.generate.Order;
+import com.westee.api.generate.OrderMapper;
 import com.westee.api.rpc.OrderRpcService;
 import com.westee.order.mapper.MyOrderMapper;
 import org.apache.dubbo.config.annotation.Service;
@@ -23,6 +25,11 @@ public class RpcOrderRpcServiceImpl implements OrderRpcService {
         insertOrder(order);
         myOrderMapper.insertOrders(orderInfo);
         return order;
+    }
+
+    @Override
+    public void deductStock(OrderInfo orderInfo) {
+
     }
 
     private void insertOrder(Order order) {

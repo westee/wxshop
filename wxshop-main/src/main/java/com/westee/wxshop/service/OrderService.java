@@ -1,5 +1,6 @@
 package com.westee.wxshop.service;
 
+import com.westee.api.DataStatus;
 import com.westee.api.data.GoodsInfo;
 import com.westee.api.data.OrderInfo;
 import com.westee.api.generate.Order;
@@ -13,11 +14,11 @@ import com.westee.wxshop.generate.ShopMapper;
 import com.westee.wxshop.generate.UserMapper;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,21 +39,25 @@ public class OrderService {
 
     private ShopMapper shopMapper;
 
-    private SqlSessionFactory sessionFactory;
+    private SqlSessionFactory sqlSessionFactory;
 
     @Autowired
-    public OrderService(UserMapper userMapper, GoodsStockMapper goodsStockMapper, ShopMapper shopMapper, GoodsService goodsService) {
+    public OrderService(UserMapper userMapper, GoodsStockMapper goodsStockMapper, ShopMapper shopMapper,
+                        GoodsService goodsService, SqlSessionFactory sqlSessionFactory) {
         this.userMapper = userMapper;
         this.goodsStockMapper = goodsStockMapper;
         this.goodsService = goodsService;
         this.shopMapper = shopMapper;
+        this.sqlSessionFactory = sqlSessionFactory;
     }
 
+    @Transactional
     public OrderResponse createOrder(OrderInfo orderInfo, Long userId) throws Exception {
         // 扣减库存失败
-        if (!deductStock(orderInfo)) {
-            throw HttpException.gone("扣减库存失败");
-        }
+//        if (!deductStock(orderInfo)) {
+//            throw HttpException.gone("扣减库存失败");
+//        }
+        deductStock(orderInfo);
 
         Map<Long, Goods> idToGoodsMap = getIdTOGoodsMap(orderInfo);
         Order createOrder = createdOrderViaRpc(orderInfo, idToGoodsMap, userId);
@@ -87,10 +92,10 @@ public class OrderService {
         Order order = new Order();
 
         order.setUserId(userId);
+        order.setStatus(DataStatus.PENDING.getName());
         order.setAddress(userMapper.selectByPrimaryKey(userId).getAddress());
         order.setTotalPrice(calculateTotalPrice(orderInfo, idToGoodsMap));
-        Order createOrder = orderRpcService.createOrder(orderInfo, order);
-        return createOrder;
+        return orderRpcService.createOrder(orderInfo, order);
     }
 
     /**
@@ -99,20 +104,30 @@ public class OrderService {
      * @param orderInfo
      * @return 全部扣减成功，返回true，否则返回false。
      */
-    // RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE
-    public boolean deductStock(OrderInfo orderInfo) {
-        try (SqlSession sqlSession = sessionFactory.openSession(false)) {
-            for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
-                if (goodsStockMapper.deductStock(goodsInfo) <= 0) {
-                    LOGGER.error("扣减库存失败，商品id:" + goodsInfo.getId());
-                    sqlSession.rollback();
-                    return false;
-                }
+    @Transactional
+    public void deductStock(OrderInfo orderInfo) throws Exception {
+        for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
+            if (goodsStockMapper.deductStock(goodsInfo) <= 0) {
+                LOGGER.error("扣减库存失败，商品id:" + goodsInfo.getId());
+                throw HttpException.gone("扣减库存失败");
             }
-            sqlSession.commit();
-            return true;
         }
     }
+
+//    @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
+//    public boolean deductStock(OrderInfo orderInfo) {
+//        try (SqlSession sqlSession = sqlSessionFactory.openSession(false)) {
+//            for (GoodsInfo goodsInfo : orderInfo.getGoods()) {
+//                if (goodsStockMapper.deductStock(goodsInfo) <= 0) {
+//                    LOGGER.error("扣减库存失败，商品id:" + goodsInfo.getId());
+//                    sqlSession.rollback();
+//                    return false;
+//                }
+//            }
+//            sqlSession.commit();
+//            return true;
+//        }
+//    }
 
 
     private GoodsWithNumber toGoodsWithNumber(GoodsInfo goodsInfo, Map<Long, Goods> idToGoodsMap) {
@@ -133,7 +148,7 @@ public class OrderService {
                 throw HttpException.badRequest("number非法" + goodsInfo.getNumber());
             }
 
-            result = result + (goods.getPrice()*goodsInfo.getNumber());
+            result = result + (goods.getPrice() * goodsInfo.getNumber());
         }
         return result;
     }

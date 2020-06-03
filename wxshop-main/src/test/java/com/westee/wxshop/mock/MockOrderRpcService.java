@@ -9,11 +9,11 @@ import org.mockito.Mock;
 @Service(version = "${wxshop.orderservice.version}")
 public class MockOrderRpcService implements OrderRpcService {
     @Mock
-    OrderRpcService orderRpcService;
+    public OrderRpcService orderRpcService;
 
     @Override
-    public Order createOrder(OrderInfo userId, Order order) {
-        return null;
+    public Order createOrder(OrderInfo orderInfo, Order order) {
+        return orderRpcService.createOrder(orderInfo, order);
     }
 
     @Override
