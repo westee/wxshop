@@ -30,8 +30,8 @@ public class UserLoginInterceptor implements HandlerInterceptor {
 
     // 处理完请求之后。
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        UserContext.setCurrentUser(null);
-    }
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        UserContext.clearCurrentUser();
 
+    }
 }
