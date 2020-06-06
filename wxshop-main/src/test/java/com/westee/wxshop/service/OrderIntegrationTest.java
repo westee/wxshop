@@ -109,5 +109,11 @@ public class OrderIntegrationTest extends AbstractIntegrationTest {
         Assertions.assertEquals(HttpStatus.GONE.value(), response.code);
     }
 
+    @Test
+    public void canDeleteOrder() throws Exception {
+        canCreateOrder();
+
+    }
+
 
 }

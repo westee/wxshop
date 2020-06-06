@@ -1,15 +1,12 @@
 package com.westee.wxshop.controller;
 
 import com.westee.api.data.OrderInfo;
-import com.westee.wxshop.entity.HttpException;
+import com.westee.api.exceptions.HttpException;
 import com.westee.wxshop.entity.OrderResponse;
 import com.westee.wxshop.entity.Response;
 import com.westee.wxshop.service.OrderService;
 import com.westee.wxshop.service.UserContext;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -366,9 +363,9 @@ public class OrderController {
      * @param orderId
      * @return 删除后的订单
      */
-//    @DeleteMapping("/order/{id}")
-//    public Response<OrderResponse> deleteOrder(@PathVariable("id") long orderId) {
-//        return Response.of(orderService.deleteOrder(orderId, UserContext.getCurrentUser().getId()));
-//    }
+    @DeleteMapping("/order/{id}")
+    public Response<OrderResponse> deleteOrder(@PathVariable("id") long orderId) {
+        return Response.of(orderService.deleteOrder(orderId, UserContext.getCurrentUser().getId()));
+    }
 }
 

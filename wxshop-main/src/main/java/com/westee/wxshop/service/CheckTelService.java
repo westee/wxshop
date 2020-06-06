@@ -2,7 +2,7 @@ package com.westee.wxshop.service;
 
 import com.westee.wxshop.controller.AuthController;
 import com.westee.api.DataStatus;
-import com.westee.wxshop.entity.HttpException;
+import com.westee.api.exceptions.HttpException;
 import com.westee.wxshop.entity.PageResponse;
 import com.westee.wxshop.generate.Shop;
 import com.westee.wxshop.generate.ShopExample;

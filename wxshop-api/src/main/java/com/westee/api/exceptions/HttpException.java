@@ -1,4 +1,4 @@
-package com.westee.wxshop.entity;
+package com.westee.api.exceptions;
 
 import org.springframework.http.HttpStatus;
 

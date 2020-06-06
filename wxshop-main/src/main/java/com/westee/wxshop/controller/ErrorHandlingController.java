@@ -1,6 +1,6 @@
 package com.westee.wxshop.controller;
 
-import com.westee.wxshop.entity.HttpException;
+import com.westee.api.exceptions.HttpException;
 import com.westee.wxshop.entity.Response;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
