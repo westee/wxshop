@@ -98,6 +98,23 @@ public class RpcOrderRpcServiceImpl implements OrderRpcService {
         return PageResponse.pageData(pageNum, pageSize,totalPage, rpcOrderGoods);
     }
 
+    @Override
+    public Order getOrderById(Long orderId) {
+        return orderMapper.selectByPrimaryKey(orderId);
+    }
+
+    @Override
+    public RpcOrderGoods updateOrder(Order order) {
+        orderMapper.updateByPrimaryKey(order);
+
+        List<GoodsInfo> goodsInfo = myOrderMapper.getGoodsInfoOfOrder(order.getId());
+
+        RpcOrderGoods result = new RpcOrderGoods();
+        result.setGoods(goodsInfo);
+        result.setOrder(orderMapper.selectByPrimaryKey(order.getId()));
+        return result;
+    }
+
     private RpcOrderGoods toRpcOrderGoods(Order order,  Map<Long, List<OrderGoods>> orderIdToGoodsMap   ){
         RpcOrderGoods result = new RpcOrderGoods();
         result.setOrder(order);

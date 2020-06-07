@@ -14,4 +14,8 @@ public interface OrderRpcService {
     RpcOrderGoods deleteOrder(long orderId, long userId);
 
     PageResponse<RpcOrderGoods> getOrder(long userId, Integer pageNum, Integer pageSize, DataStatus status);
+
+    Order getOrderById(Long id);
+
+    RpcOrderGoods updateOrder(Order order);
 }

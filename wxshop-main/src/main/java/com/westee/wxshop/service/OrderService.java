@@ -12,6 +12,7 @@ import com.westee.api.exceptions.HttpException;
 import com.westee.wxshop.entity.OrderResponse;
 import com.westee.api.data.PageResponse;
 import com.westee.wxshop.generate.Goods;
+import com.westee.wxshop.generate.Shop;
 import com.westee.wxshop.generate.ShopMapper;
 import com.westee.wxshop.generate.UserMapper;
 import org.apache.dubbo.config.annotation.Reference;
@@ -157,12 +158,16 @@ public class OrderService {
 
     public OrderResponse deleteOrder(long orderId, long userId) {
         RpcOrderGoods rpcOrderGoods = orderRpcService.deleteOrder(orderId, userId);
+        return toOrderResponse(rpcOrderGoods);
+    }
+
+    private OrderResponse toOrderResponse(RpcOrderGoods rpcOrderGoods){
         Map<Long, Goods> idToGoodsMap = getIdTOGoodsMap(rpcOrderGoods.getGoods());
         return generateResponse(rpcOrderGoods.getOrder(), idToGoodsMap, rpcOrderGoods.getGoods());
     }
 
-    public PageResponse<OrderResponse> getOrder(Long id, Integer pageNum, Integer pageSize, DataStatus status) {
-        PageResponse<RpcOrderGoods> rpcOrderGoods = orderRpcService.getOrder(id, pageNum, pageSize, status);
+    public PageResponse<OrderResponse> getOrder(Long userId, Integer pageNum, Integer pageSize, DataStatus status) {
+        PageResponse<RpcOrderGoods> rpcOrderGoods = orderRpcService.getOrder(userId, pageNum, pageSize, status);
 
         List<GoodsInfo> goodsInfo = rpcOrderGoods
                 .getData()
@@ -187,5 +192,36 @@ public class OrderService {
 
     public Object getOrderById(Long id, long id1) {
         return null;
+    }
+
+    public OrderResponse updateExpressInformation(Order order, Long userId) {
+        Order orderInDatabase = orderRpcService.getOrderById(order.getId());
+        if(orderInDatabase == null){
+            throw HttpException.notFound("订单未找到，id="+order.getId());
+        }
+
+        Shop shop = shopMapper.selectByPrimaryKey(orderInDatabase.getShopId());
+        if(shop == null){
+            throw HttpException.notFound(("店铺未找到"));
+        }
+
+        if(!shop.getOwnerUserId().equals(userId)){
+            throw HttpException.forbidden("禁止访问");
+        }
+
+        Order copy = new Order();
+        copy.setId(order.getId());
+        copy.setExpressId(order.getExpressId());
+        copy.setExpressCompany(order.getExpressCompany());
+        return toOrderResponse(orderRpcService.updateOrder(copy));
+    }
+
+    public Object updateOrderStatus(Order order, Long userId) {
+        Order orderInDatabase = orderRpcService.getOrderById(order.getId());
+        if(orderInDatabase == null){
+            throw HttpException.notFound("订单未找到，id="+order.getId());
+        }
+
+
     }
 }

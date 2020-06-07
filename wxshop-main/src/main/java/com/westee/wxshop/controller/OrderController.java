@@ -3,6 +3,7 @@ package com.westee.wxshop.controller;
 import com.westee.api.DataStatus;
 import com.westee.api.data.OrderInfo;
 import com.westee.api.exceptions.HttpException;
+import com.westee.api.generate.Order;
 import com.westee.wxshop.entity.OrderResponse;
 import com.westee.api.data.PageResponse;
 import com.westee.wxshop.entity.Response;
@@ -290,15 +291,15 @@ public class OrderController {
      * @param order
      * @return 更新后的订单
      */
-//    @RequestMapping(value = "/order/{id}", method = {RequestMethod.POST, RequestMethod.PATCH})
-//    public Response<OrderResponse> updateOrder(@PathVariable("id") long id, @RequestBody Order order) {
-//        order.setId(id);
-//        if (order.getExpressCompany() != null) {
-//            return Response.of(orderService.updateExpressInformation(order, UserContext.getCurrentUser().getId()));
-//        } else {
-//            return Response.of(orderService.updateOrderStatus(order, UserContext.getCurrentUser().getId()));
-//        }
-//    }
+    @RequestMapping(value = "/order/{id}", method = {RequestMethod.POST, RequestMethod.PATCH})
+    public Response<OrderResponse> updateOrder(@PathVariable("id") long id, @RequestBody Order order) {
+        order.setId(id);
+        if (order.getExpressCompany() != null) {
+            return Response.of(orderService.updateExpressInformation(order, UserContext.getCurrentUser().getId()));
+        } else {
+            return Response.of(orderService.updateOrderStatus(order, UserContext.getCurrentUser().getId()));
+        }
+    }
 
     // @formatter:off
     /**
