@@ -216,12 +216,18 @@ public class OrderService {
         return toOrderResponse(orderRpcService.updateOrder(copy));
     }
 
-    public Object updateOrderStatus(Order order, Long userId) {
+    public OrderResponse updateOrderStatus(Order order, long userId) {
         Order orderInDatabase = orderRpcService.getOrderById(order.getId());
         if(orderInDatabase == null){
             throw HttpException.notFound("订单未找到，id="+order.getId());
         }
 
+        if(orderInDatabase.getUserId() != userId){
+            throw HttpException.forbidden("无权访问");
+        }
 
+        Order copy = new Order();
+        copy.setStatus(order.getStatus());
+        return toOrderResponse(orderRpcService.updateOrder(order));
     }
 }
