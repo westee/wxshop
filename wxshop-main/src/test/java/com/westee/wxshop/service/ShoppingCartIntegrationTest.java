@@ -3,7 +3,7 @@ package com.westee.wxshop.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.westee.wxshop.WxshopApplication;
-import com.westee.wxshop.entity.PageResponse;
+import com.westee.api.data.PageResponse;
 import com.westee.wxshop.entity.ShoppingCartData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

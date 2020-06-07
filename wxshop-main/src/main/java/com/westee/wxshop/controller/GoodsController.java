@@ -1,7 +1,7 @@
 package com.westee.wxshop.controller;
 
 import com.westee.api.exceptions.HttpException;
-import com.westee.wxshop.entity.PageResponse;
+import com.westee.api.data.PageResponse;
 import com.westee.wxshop.entity.Response;
 import com.westee.wxshop.generate.Goods;
 import com.westee.wxshop.service.GoodsService;

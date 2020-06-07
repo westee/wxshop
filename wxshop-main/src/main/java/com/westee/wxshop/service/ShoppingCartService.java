@@ -4,7 +4,7 @@ import com.westee.wxshop.controller.ShoppingCartController;
 import com.westee.wxshop.dao.ShoppingCartQueryMapper;
 import com.westee.api.DataStatus;
 import com.westee.api.exceptions.HttpException;
-import com.westee.wxshop.entity.PageResponse;
+import com.westee.api.data.PageResponse;
 import com.westee.wxshop.entity.ShoppingCartData;
 import com.westee.wxshop.entity.ShoppingCartGoods;
 import com.westee.wxshop.generate.Goods;

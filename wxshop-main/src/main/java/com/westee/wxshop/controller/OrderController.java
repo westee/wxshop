@@ -1,8 +1,10 @@
 package com.westee.wxshop.controller;
 
+import com.westee.api.DataStatus;
 import com.westee.api.data.OrderInfo;
 import com.westee.api.exceptions.HttpException;
 import com.westee.wxshop.entity.OrderResponse;
+import com.westee.api.data.PageResponse;
 import com.westee.wxshop.entity.Response;
 import com.westee.wxshop.service.OrderService;
 import com.westee.wxshop.service.UserContext;
@@ -96,16 +98,17 @@ public class OrderController {
      * @param status
      * @return 结果
      */
-//    @GetMapping("/order")
-//    public PageResponse<com.westee.entity.OrderResponse> getOrder(@RequestParam("pageNum") Integer pageNum,
-//                                                                  @RequestParam("pageSize") Integer pageSize,
-//                                                                  @RequestParam(value = "status", required = false) String status) {
-//        if (status != null && DataStatus.fromStatus(status) == null) {
-//            throw HttpException.badRequest("非法status: " + status);
-//        }
-//
-//        return orderService.getOrder(UserContext.getCurrentUser().getId(), pageNum, pageSize, DataStatus.fromStatus(status));
-//    }
+    @GetMapping("/order")
+    public PageResponse<OrderResponse> getOrder(@RequestParam("pageNum") Integer pageNum,
+                                                @RequestParam("pageSize") Integer pageSize,
+                                                @RequestParam(value = "status", required = false) String status) {
+        //
+        if (status != null && DataStatus.fromStatus(status) == null) {
+            throw HttpException.badRequest("非法status: " + status);
+        }
+
+        return orderService.getOrder(UserContext.getCurrentUser().getId(), pageNum, pageSize, DataStatus.fromStatus(status));
+    }
 
     /**
      * 根据id获取订单

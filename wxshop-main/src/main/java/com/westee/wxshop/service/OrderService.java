@@ -10,6 +10,7 @@ import com.westee.wxshop.dao.GoodsStockMapper;
 import com.westee.wxshop.entity.GoodsWithNumber;
 import com.westee.api.exceptions.HttpException;
 import com.westee.wxshop.entity.OrderResponse;
+import com.westee.api.data.PageResponse;
 import com.westee.wxshop.generate.Goods;
 import com.westee.wxshop.generate.ShopMapper;
 import com.westee.wxshop.generate.UserMapper;
@@ -158,5 +159,33 @@ public class OrderService {
         RpcOrderGoods rpcOrderGoods = orderRpcService.deleteOrder(orderId, userId);
         Map<Long, Goods> idToGoodsMap = getIdTOGoodsMap(rpcOrderGoods.getGoods());
         return generateResponse(rpcOrderGoods.getOrder(), idToGoodsMap, rpcOrderGoods.getGoods());
+    }
+
+    public PageResponse<OrderResponse> getOrder(Long id, Integer pageNum, Integer pageSize, DataStatus status) {
+        PageResponse<RpcOrderGoods> rpcOrderGoods = orderRpcService.getOrder(id, pageNum, pageSize, status);
+
+        List<GoodsInfo> goodsInfo = rpcOrderGoods
+                .getData()
+                .stream()
+                .map(RpcOrderGoods::getGoods)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        Map<Long, Goods> idToGoodsMap = getIdTOGoodsMap(goodsInfo);
+        List<OrderResponse> orders = rpcOrderGoods.getData()
+                .stream()
+                .map(order -> generateResponse(order.getOrder(), idToGoodsMap, order.getGoods()))
+                .collect( Collectors.toList());
+
+        return PageResponse.pageData(
+                rpcOrderGoods.getPageNum(),
+                rpcOrderGoods.getPageSize(),
+                rpcOrderGoods.getTotalPage(),
+                orders
+        );
+    }
+
+    public Object getOrderById(Long id, long id1) {
+        return null;
     }
 }

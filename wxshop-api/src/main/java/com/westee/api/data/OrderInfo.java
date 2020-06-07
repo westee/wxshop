@@ -7,9 +7,6 @@ public class OrderInfo implements Serializable {
     private long orderId;
     List<GoodsInfo> goods;
 
-    public OrderInfo(long orderId) {
-        this.orderId = orderId;
-    }
 
     public long getOrderId() {
         return orderId;

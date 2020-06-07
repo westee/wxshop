@@ -2,7 +2,7 @@ package com.westee.wxshop.service;
 
 import com.westee.api.DataStatus;
 import com.westee.api.exceptions.HttpException;
-import com.westee.wxshop.entity.PageResponse;
+import com.westee.api.data.PageResponse;
 import com.westee.wxshop.generate.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
