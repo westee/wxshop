@@ -117,10 +117,41 @@ public class AbstractIntegrationTest {
             this.headers = headers;
         }
 
+        HttpResponse assertOkStatusCode() {
+            Assertions.assertTrue(code >= 200 && code < 300, "" + code + ": " + body);
+            return this;
+        }
+
         public <T>  T asJsonObject(TypeReference<T> data) throws JsonProcessingException {
             T result = objectMapper.readValue(body, data);
             return result;
         }
+    }
+
+    private HttpRequest createRequest(String url, String method) {
+        if ("PATCH".equalsIgnoreCase(method)) {
+            // workaround for https://bugs.openjdk.java.net/browse/JDK-8207840
+            HttpRequest request = new HttpRequest(url, "POST");
+            request.header("X-HTTP-Method-Override", "PATCH");
+            return request;
+        } else {
+            return new HttpRequest(url, method);
+        }
+    }
+
+    public HttpResponse doHttpRequest(String apiName, String httpMethod, Object requestBody, String cookie) throws JsonProcessingException {
+        HttpRequest request = createRequest(getUrl(apiName), httpMethod);
+
+        if (cookie != null) {
+            request.header("Cookie", cookie);
+        }
+        request.contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE);
+
+        if (requestBody != null) {
+            request.send(objectMapper.writeValueAsString(requestBody));
+        }
+
+        return new HttpResponse(request.code(), request.body(), request.headers());
     }
 
     public HttpResponse doHttpRequest(String apiName, boolean isGet, String requestBody, String cookie) throws JsonProcessingException {
